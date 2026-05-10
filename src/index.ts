@@ -362,7 +362,7 @@ export function verifyChain(events: LedgerEvent[]): ChainVerificationResult {
       valid: true,
       errors: [],
       checkedEvents: 0,
-      chainVersion: 'v0',
+      chainVersion: 'unknown',
       genesisDigest: null,
       tipDigest: null,
     };
@@ -392,14 +392,24 @@ export function verifyChain(events: LedgerEvent[]): ChainVerificationResult {
   }
 
   const ordered: LedgerEvent[] = [];
+  const visitedDigests = new Set<string>();
   let current = byPreviousDigest.get(null);
   while (current) {
+    // Cycle detection — a self-referential or looping chain would otherwise hang indefinitely
+    if (visitedDigests.has(current.eventDigest)) {
+      errors.push(
+        `Cycle detected at event ${current.id} (digest ${current.eventDigest.slice(0, 16)}…) — ` +
+          'chain is self-referential or contains a loop. Possible tampering.',
+      );
+      break;
+    }
+    visitedDigests.add(current.eventDigest);
     ordered.push(current);
     current = byPreviousDigest.get(current.eventDigest);
   }
 
   // If we can't reach all events from genesis, the chain is broken
-  if (ordered.length !== events.length) {
+  if (errors.length === 0 && ordered.length !== events.length) {
     errors.push(
       `Chain is broken: only ${ordered.length} of ${events.length} events are reachable from genesis.`,
     );

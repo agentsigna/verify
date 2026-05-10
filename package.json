@@ -3,12 +3,14 @@
   "version": "1.0.0",
   "description": "Standalone offline verifier for AgentSigna Action Authorization Passports and Ledger Chains. No AgentSigna API dependency.",
   "main": "dist/index.js",
+  "module": "dist/esm/index.js",
   "types": "dist/index.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts",
+      "import": "./dist/esm/index.js",
       "require": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+      "default": "./dist/index.js"
     }
   },
   "files": [
@@ -18,8 +20,8 @@
   ],
   "sideEffects": false,
   "scripts": {
-    "build": "tsc -p tsconfig.build.json",
-    "prepare": "tsc -p tsconfig.build.json",
+    "build": "tsc -p tsconfig.build.json && tsc -p tsconfig.esm.json",
+    "prepare": "tsc -p tsconfig.build.json && tsc -p tsconfig.esm.json",
     "test": "tsc && node --test dist/index.test.js"
   },
   "keywords": [
