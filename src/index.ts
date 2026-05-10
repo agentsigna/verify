@@ -17,7 +17,7 @@
  *  - HTTPS-only JWKS fetch, redirect:error — prevents HTTPS→HTTP downgrade attacks
  */
 
-import { createHash, createPublicKey, verify as nodeVerify, KeyObject } from 'crypto';
+import { createHash, createPublicKey, verify as nodeVerify, KeyObject } from 'node:crypto';
 
 // ── Types ────────────────────────────────────────────────────────────────────
 

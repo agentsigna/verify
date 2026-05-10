@@ -3,7 +3,7 @@
  * Run: npm test (requires npm run build first)
  */
 
-import { describe, it, mock } from 'node:test';
+import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import {
   generateKeyPairSync,
@@ -202,10 +202,6 @@ function sha256(data: string): string {
   return createHash('sha256').update(data).digest('hex');
 }
 
-function stableStr(v: unknown): string {
-  return stableStringify(v);
-}
-
 function makeChain(caseId: string, count: number): LedgerEvent[] {
   const events: LedgerEvent[] = [];
   let prev: string | null = null;
@@ -216,7 +212,7 @@ function makeChain(caseId: string, count: number): LedgerEvent[] {
         ? { _ledgerVersion: 'v1', action: 'open' }
         : { status: `step-${i}` };
     const digest = sha256(
-      `v1:${caseId}:${prev ?? 'GENESIS'}:${eventType}:${stableStr(payload)}`,
+      `v1:${caseId}:${prev ?? 'GENESIS'}:${eventType}:${stableStringify(payload)}`,
     );
     events.push({
       id: `evt-${i}`,

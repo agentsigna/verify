@@ -16,10 +16,11 @@
     "README.md",
     "LICENSE"
   ],
+  "sideEffects": false,
   "scripts": {
-    "build": "tsc",
-    "prepare": "tsc",
-    "test": "node --test dist/index.test.js"
+    "build": "tsc -p tsconfig.build.json",
+    "prepare": "tsc -p tsconfig.build.json",
+    "test": "tsc && node --test dist/index.test.js"
   },
   "keywords": [
     "agentsigna",
