@@ -23,7 +23,8 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm test
-      - run: npm run build
+      - name: Clean dist before publish
+        run: node -e "require('fs').rmSync('dist', {recursive:true,force:true})"
       - run: npm publish --access public --provenance
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
