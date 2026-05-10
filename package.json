@@ -46,8 +46,8 @@
   "engines": {
     "node": ">=18.0.0"
   },
-  "dependencies": {},
   "devDependencies": {
-    "typescript": "5.9.3"
+    "@types/node": "22.19.18",
+    "typescript": "6.0.3"
   }
 }
