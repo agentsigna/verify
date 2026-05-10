@@ -1,0 +1,36 @@
+{
+  "name": "@agentsigna/verify",
+  "version": "1.0.0",
+  "description": "Standalone offline verifier for AgentSigna Action Authorization Passports and Ledger Chains. No AgentSigna API dependency.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "node --test dist/index.test.js"
+  },
+  "keywords": [
+    "agentsigna",
+    "passport",
+    "authorization",
+    "ai-agent",
+    "audit",
+    "ledger",
+    "ed25519",
+    "verification"
+  ],
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  }
+}
