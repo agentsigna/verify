@@ -11,8 +11,10 @@
  *  - Ed25519 signature verification (RFC 8032) — constant-time, no timing oracle
  *  - Canonical JSON serialisation (RFC 8785-style, key-sorted) — prevents key-ordering bypass
  *  - Chain integrity via SHA-256 hash-chain — tamper detection across full event sequence
+ *  - Cross-case isolation — verifyChain rejects events with mismatched actionCaseIds
  *  - Self-describing algorithm version — auto-detects v0 legacy chains and v1 chains
- *  - No network calls — pass the public key or JWK directly; no SSRF risk (OWASP A10)
+ *  - No network calls in verifyPassport / verifyChain — no SSRF risk (OWASP A10)
+ *  - HTTPS-only JWKS fetch, redirect:error — prevents HTTPS→HTTP downgrade attacks
  */
 
 import { createHash, createPublicKey, verify as nodeVerify, KeyObject } from 'crypto';
@@ -88,6 +90,7 @@ export interface PassportVerificationResult {
   passport?: {
     jti: string;
     actionCaseId: string;
+    issuer: string;
     decision: string;
     actionType: string | null;
     amount: number | null;
@@ -132,7 +135,6 @@ function loadPublicKey(source: string | JWK | KeyObject): KeyObject {
     return createPublicKey(source);
   }
   if (source && typeof source === 'object' && !('asymmetricKeyType' in source)) {
-    // JWK plain object — cast through unknown to satisfy Node.js crypto overloads
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return createPublicKey({ key: source as any, format: 'jwk' });
   }
@@ -191,18 +193,24 @@ function detectChainVersion(genesisEvent: LedgerEvent | undefined): string {
  *
  * @param passport  - The passport object from the AgentSigna API or export
  * @param publicKey - Ed25519 public key as PEM string, JWK object, or Node.js KeyObject
+ * @param options.expectedIssuer - If provided, the passport issuer field must match exactly.
+ *                                 Always set this in production to prevent cross-tenant substitution.
  * @param options.actionPayload - If provided, re-computes actionHash to verify the passport
- *                                was issued for this exact action payload (ASAAP §4.3)
+ *                                was issued for this exact action payload (ASAAP §4.3).
+ *                                An error is returned if the passport has no actionHash to compare.
  * @param options.nowMs - Override clock for testing (default: Date.now())
  *
  * Example:
- *   const result = verifyPassport(passport, jwk.keys[0]);
+ *   const result = verifyPassport(passport, publicKey, {
+ *     expectedIssuer: 'https://api.agentsigna.com/orgs/acme-corp',
+ *   });
  *   if (!result.valid) console.error(result.errors);
  */
 export function verifyPassport(
   passport: Passport,
   publicKey: string | JWK | KeyObject,
   options: {
+    expectedIssuer?: string;
     actionPayload?: unknown;
     nowMs?: number;
   } = {},
@@ -233,12 +241,29 @@ export function verifyPassport(
     warnings.push(`Passport spec version "${p.specVersion}" — this verifier targets 1.0.`);
   }
 
-  // ── 3. Revocation check ───────────────────────────────────────────────────
+  // ── 3. Issuer validation ──────────────────────────────────────────────────
+  if (options.expectedIssuer) {
+    if (!p.issuer) {
+      errors.push('Passport payload is missing issuer field.');
+    } else if (p.issuer !== options.expectedIssuer) {
+      errors.push(
+        `Issuer mismatch: expected "${options.expectedIssuer}", got "${p.issuer}". ` +
+          'Possible cross-tenant passport substitution.',
+      );
+    }
+  } else {
+    warnings.push(
+      'No expectedIssuer provided. Set options.expectedIssuer in production to prevent ' +
+        'cross-tenant passport substitution.',
+    );
+  }
+
+  // ── 4. Revocation check ───────────────────────────────────────────────────
   if (passport.status === 'REVOKED') {
     errors.push('Passport has been revoked.');
   }
 
-  // ── 4. Expiry check ───────────────────────────────────────────────────────
+  // ── 5. Expiry check ───────────────────────────────────────────────────────
   const expiresAt = new Date(p.expiresAt).getTime();
   if (Number.isNaN(expiresAt)) {
     errors.push('Passport expiresAt is not a valid date.');
@@ -246,13 +271,18 @@ export function verifyPassport(
     errors.push(`Passport expired at ${p.expiresAt}.`);
   }
 
-  // ── 5. jti presence (replay protection) ───────────────────────────────────
+  // ── 6. jti presence (replay protection) ───────────────────────────────────
   if (!p.jti || typeof p.jti !== 'string') {
-    warnings.push('Passport is missing jti field (replay protection identifier).');
+    warnings.push(
+      'Passport is missing jti field (replay protection identifier). ' +
+        'Use JtiCache to detect replayed passports.',
+    );
   }
 
-  // ── 6. Signature verification ─────────────────────────────────────────────
-  if (errors.length === 0 || errors.every((e) => e.includes('expired'))) {
+  // ── 7. Signature verification ─────────────────────────────────────────────
+  // Always attempt signature verification regardless of other errors so that
+  // tamper evidence is always surfaced in the error list.
+  if (passport.signature) {
     try {
       const key = loadPublicKey(publicKey);
       const sigValid = verifyEd25519(passport.payload, passport.signature, key);
@@ -265,18 +295,27 @@ export function verifyPassport(
     }
   }
 
-  // ── 7. Action payload integrity (optional) ────────────────────────────────
+  // ── 8. Action payload integrity (optional) ────────────────────────────────
   let actionHashVerified = false;
-  if (options.actionPayload !== undefined && p.actionHash) {
-    const recomputed = createHash('sha256')
-      .update(stableStringify(options.actionPayload))
-      .digest('hex');
-    actionHashVerified = recomputed === p.actionHash;
-    if (!actionHashVerified) {
+  if (options.actionPayload !== undefined) {
+    if (!p.actionHash) {
+      // Caller requested integrity check but the passport was issued without an actionHash.
+      // Surface as an error rather than silently skipping — the caller's expectation was not met.
       errors.push(
-        'actionHash mismatch — the action payload does not match what was authorized. ' +
-          'Possible tampering.',
+        'actionPayload was provided for integrity verification, but the passport has no ' +
+          'actionHash. Cannot confirm the passport covers this specific payload.',
       );
+    } else {
+      const recomputed = createHash('sha256')
+        .update(stableStringify(options.actionPayload))
+        .digest('hex');
+      actionHashVerified = recomputed === p.actionHash;
+      if (!actionHashVerified) {
+        errors.push(
+          'actionHash mismatch — the action payload does not match what was authorized. ' +
+            'Possible tampering.',
+        );
+      }
     }
   }
 
@@ -287,6 +326,7 @@ export function verifyPassport(
     passport: {
       jti: p.jti ?? '',
       actionCaseId: p.actionCaseId ?? '',
+      issuer: p.issuer ?? '',
       decision: p.decision ?? '',
       actionType: p.actionType ?? null,
       amount: p.amount ?? null,
@@ -305,6 +345,9 @@ export function verifyPassport(
  * Events may be provided in any order — the verifier reconstructs the chain
  * by following previousDigest links (immune to timestamp manipulation).
  *
+ * All events must share the same actionCaseId. Mixed-case event sets are rejected
+ * to prevent cross-case chain grafting attacks.
+ *
  * @param events - All ledger events for a single action case
  *
  * Example:
@@ -320,6 +363,23 @@ export function verifyChain(events: LedgerEvent[]): ChainVerificationResult {
       errors: [],
       checkedEvents: 0,
       chainVersion: 'v0',
+      genesisDigest: null,
+      tipDigest: null,
+    };
+  }
+
+  // ── Cross-case isolation — all events must belong to the same action case ──
+  const caseIds = new Set(events.map((e) => e.actionCaseId));
+  if (caseIds.size > 1) {
+    return {
+      valid: false,
+      errors: [
+        `Cross-case isolation violation: events from ${caseIds.size} different actionCaseIds ` +
+          `were supplied (${[...caseIds].join(', ')}). ` +
+          'verifyChain must be called with events from a single action case.',
+      ],
+      checkedEvents: 0,
+      chainVersion: 'unknown',
       genesisDigest: null,
       tipDigest: null,
     };
@@ -390,14 +450,16 @@ export function verifyChain(events: LedgerEvent[]): ChainVerificationResult {
  * Fetches a JWKS from a URL and returns the first Ed25519 key.
  * For auditor tooling — call once and cache the result.
  *
- * Security: only pass URLs you trust. This function does NOT follow redirects
- * beyond what fetch() permits and does NOT execute fetched content. (OWASP A10)
+ * Security:
+ * - HTTPS-only input URL (rejects HTTP to prevent initial MITM, OWASP A10)
+ * - redirect:'error' (prevents HTTPS→HTTP downgrade via redirect)
+ * - 10-second timeout (AbortSignal.timeout, Node 18+)
+ * - Does NOT execute fetched content
  */
 export async function fetchPublicKeyFromJwks(
   jwksUrl: string,
   keyId?: string,
 ): Promise<KeyObject> {
-  // OWASP A10 — reject non-HTTPS URLs to prevent MITM key substitution
   if (!jwksUrl.startsWith('https://')) {
     throw new Error(
       `SSRF/MITM protection: JWKS URL must use HTTPS. Got: ${jwksUrl}`,
@@ -406,6 +468,8 @@ export async function fetchPublicKeyFromJwks(
 
   const res = await fetch(jwksUrl, {
     headers: { Accept: 'application/json' },
+    // Prevent HTTPS→HTTP downgrade attacks via redirect chains
+    redirect: 'error',
     signal: AbortSignal.timeout(10_000),
   });
 
@@ -432,4 +496,53 @@ export async function fetchPublicKeyFromJwks(
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return createPublicKey({ key: key as any, format: 'jwk' });
+}
+
+/**
+ * In-memory jti cache for replay attack detection.
+ *
+ * Passports are single-use — if you receive the same jti twice, it is a replay.
+ * This cache automatically evicts expired entries to prevent unbounded memory growth.
+ *
+ * Usage:
+ *   const cache = new JtiCache();
+ *   const result = verifyPassport(passport, publicKey);
+ *   if (result.valid) {
+ *     if (cache.seen(result.passport.jti, result.passport.expiresAt)) {
+ *       throw new Error('Replayed passport');
+ *     }
+ *   }
+ *
+ * For distributed deployments, replace with a Redis SET with TTL expiry.
+ */
+export class JtiCache {
+  private readonly store = new Map<string, number>();
+
+  /**
+   * Returns true if this jti has been seen before (replay detected).
+   * Records it if not seen. Evicts entries whose expiresAt has passed.
+   */
+  seen(jti: string, expiresAt: string | Date, nowMs = Date.now()): boolean {
+    this.evict(nowMs);
+    if (this.store.has(jti)) return true;
+    const exp = new Date(expiresAt).getTime();
+    if (!Number.isNaN(exp) && exp > nowMs) {
+      this.store.set(jti, exp);
+    }
+    return false;
+  }
+
+  private evict(nowMs: number): void {
+    for (const [jti, exp] of this.store) {
+      if (exp <= nowMs) this.store.delete(jti);
+    }
+  }
+
+  get size(): number {
+    return this.store.size;
+  }
+
+  clear(): void {
+    this.store.clear();
+  }
 }

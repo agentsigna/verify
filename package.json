@@ -11,8 +11,14 @@
       "types": "./dist/index.d.ts"
     }
   },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "build": "tsc",
+    "prepare": "tsc",
     "test": "node --test dist/index.test.js"
   },
   "keywords": [
@@ -26,6 +32,14 @@
     "verification"
   ],
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/agentsigna/verify.git"
+  },
+  "homepage": "https://github.com/agentsigna/verify#readme",
+  "bugs": {
+    "url": "https://github.com/agentsigna/verify/issues"
+  },
   "engines": {
     "node": ">=18.0.0"
   },
