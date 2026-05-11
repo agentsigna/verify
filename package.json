@@ -1,6 +1,6 @@
 {
   "name": "@agentsigna/verify",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Standalone offline verifier for AgentSigna Action Authorization Passports and Ledger Chains. No AgentSigna API dependency.",
   "main": "dist/index.js",
   "module": "dist/esm/index.js",
@@ -20,9 +20,11 @@
   ],
   "sideEffects": false,
   "scripts": {
-    "build": "tsc -p tsconfig.build.json && tsc -p tsconfig.esm.json",
-    "prepare": "tsc -p tsconfig.build.json && tsc -p tsconfig.esm.json",
-    "test": "tsc && node --test dist/index.test.js"
+    "clean": "node -e \"require('fs').rmSync('dist',{recursive:true,force:true});require('fs').rmSync('dist-test',{recursive:true,force:true})\"",
+    "build": "npm run clean && tsc -p tsconfig.build.json && tsc -p tsconfig.esm.json && node scripts/write-esm-package-json.cjs",
+    "prepack": "npm run build",
+    "test": "tsc -p tsconfig.test.json && node --test dist-test/index.test.js",
+    "pack:check": "npm run test && npm pack --dry-run"
   },
   "keywords": [
     "agentsigna",
@@ -35,9 +37,10 @@
     "verification"
   ],
   "license": "MIT",
+  "author": "AuthorityMesh Contributors",
   "repository": {
     "type": "git",
-    "url": "https://github.com/agentsigna/verify.git"
+    "url": "git+https://github.com/agentsigna/verify.git"
   },
   "homepage": "https://github.com/agentsigna/verify#readme",
   "bugs": {
@@ -45,6 +48,9 @@
   },
   "engines": {
     "node": ">=18.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "devDependencies": {
     "@types/node": "22.19.18",

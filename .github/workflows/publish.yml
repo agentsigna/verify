@@ -7,13 +7,13 @@ on:
 
 permissions:
   contents: read
-  id-token: write  # required for npm provenance (OIDC)
+  id-token: write
 
 jobs:
   publish:
     name: Publish to npm
     runs-on: ubuntu-latest
-    environment: npm-publish  # requires approval gate in GitHub repo settings
+    environment: npm-publish
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -22,7 +22,14 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
           cache: npm
       - run: npm ci
-      - run: npm test
-      - name: Clean dist before publish
-        run: node -e "require('fs').rmSync('dist', {recursive:true,force:true})"
+      - run: npm run pack:check
+      - name: Verify tag matches package version
+        shell: bash
+        run: |
+          TAG_VERSION="${GITHUB_REF_NAME#v}"
+          PKG_VERSION="$(node -p "require('./package.json').version")"
+          if [ "$TAG_VERSION" != "$PKG_VERSION" ]; then
+            echo "Tag $TAG_VERSION does not match package.json version $PKG_VERSION"
+            exit 1
+          fi
       - run: npm publish --access public --provenance

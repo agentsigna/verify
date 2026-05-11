@@ -1,8 +1,8 @@
 # @agentsigna/verify
 
-Standalone offline verifier for **AgentSigna Action Authorization Passports** (ASAAP v1.0) and **AgentSigna Ledger Chains** (ASLC v1.0).
+Standalone offline verifier for AgentSigna Action Authorization Passports and ledger chains.
 
-Zero runtime dependencies — uses Node.js built-in `crypto` only.
+It has zero runtime dependencies and uses Node.js built-in crypto APIs only. It is designed for auditors, counterparties, and internal control systems that need to verify signed authorization evidence without calling the AgentSigna API.
 
 ## Install
 
@@ -10,111 +10,94 @@ Zero runtime dependencies — uses Node.js built-in `crypto` only.
 npm install @agentsigna/verify
 ```
 
-Requires Node.js >= 18.0.0.
+Requires Node.js 18 or newer.
 
 ## Usage
 
-### Verify a passport
+CommonJS:
 
 ```js
-import { verifyPassport } from '@agentsigna/verify';
-
-// Public key as PEM string, JWK object, or fetched from JWKS endpoint
-const result = verifyPassport(passport, publicKey);
-
-if (result.valid) {
-  console.log('Authorized:', result.passport.decision);
-  console.log('Amount:', result.passport.amount, result.passport.currency);
-} else {
-  console.error('Invalid passport:', result.errors);
-}
+const { verifyPassport, verifyChain, JtiCache } = require('@agentsigna/verify');
 ```
 
-### Fetch the public key from AgentSigna's JWKS endpoint
+ES modules:
 
 ```js
-import { fetchPublicKeyFromJwks, verifyPassport } from '@agentsigna/verify';
-
-const publicKey = await fetchPublicKeyFromJwks(
-  'https://api.agentsigna.com/.well-known/jwks.json'
-);
-const result = verifyPassport(passport, publicKey);
+import { verifyPassport, verifyChain, JtiCache } from '@agentsigna/verify';
 ```
 
-### Verify action payload integrity (ASAAP §4.3)
-
-Confirms the passport was issued for the exact payload you submitted, not a different one:
+Verify a passport:
 
 ```js
 const result = verifyPassport(passport, publicKey, {
-  actionPayload: { orderId: 'PO-9921', amount: 14500, currency: 'USD' }
+  expectedIssuer: 'https://api.agentsigna.com/orgs/acme',
+  actionPayload: originalActionPayload,
 });
 
-if (!result.passport.actionHashVerified) {
-  throw new Error('Payload mismatch — possible tampering');
+if (!result.valid) {
+  throw new Error(result.errors.join('; '));
 }
 ```
 
-### Verify a ledger chain
+Verify a ledger chain:
 
 ```js
-import { verifyChain } from '@agentsigna/verify';
+const result = verifyChain(ledgerEvents);
 
-// Pass all ledger events for a single action case (any order)
-const result = verifyChain(events);
-
-console.log(result.valid);          // true/false
-console.log(result.checkedEvents);  // number of events verified
-console.log(result.chainVersion);   // 'v0' or 'v1'
+if (!result.valid) {
+  throw new Error(result.errors.join('; '));
+}
 ```
 
-## API
+Detect replayed passports:
 
-### `verifyPassport(passport, publicKey, options?)`
+```js
+const cache = new JtiCache();
+const result = verifyPassport(passport, publicKey, {
+  expectedIssuer: 'https://api.agentsigna.com/orgs/acme',
+});
 
-| Parameter | Type | Description |
-|---|---|---|
-| `passport` | `Passport` | Passport object from the AgentSigna API |
-| `publicKey` | `string \| JWK \| KeyObject` | Ed25519 public key |
-| `options.actionPayload` | `unknown` | Optional — re-compute actionHash to verify payload integrity |
-| `options.nowMs` | `number` | Optional — override clock (for testing) |
+if (result.valid && cache.seen(result.passport.jti, result.passport.expiresAt)) {
+  throw new Error('Replayed passport');
+}
+```
 
-Returns `PassportVerificationResult`:
-- `valid: boolean`
-- `errors: string[]`
-- `warnings: string[]`
-- `passport` — summary fields if valid
+For distributed systems, replace `JtiCache` with a shared store such as Redis using the passport expiry as the TTL.
 
-### `verifyChain(events)`
+## Security Model
 
-| Parameter | Type | Description |
-|---|---|---|
-| `events` | `LedgerEvent[]` | All ledger events for a single action case |
+`verifyPassport` checks:
 
-Returns `ChainVerificationResult`:
-- `valid: boolean`
-- `errors: string[]`
-- `checkedEvents: number`
-- `chainVersion: string`
-- `genesisDigest: string | null`
-- `tipDigest: string | null`
+- Ed25519 signature validity
+- issuer match when `expectedIssuer` is supplied
+- passport revocation status
+- passport expiry
+- optional action payload hash binding
+- structural validity of the passport envelope
 
-### `fetchPublicKeyFromJwks(jwksUrl, keyId?)`
+`verifyChain` checks:
 
-Fetches the first Ed25519 key from a JWKS endpoint. HTTPS only (rejects HTTP to prevent MITM). Pass `keyId` to select by `kid`.
+- all events belong to a single action case
+- chain reconstruction from `previousDigest`
+- SHA-256 digest validity for every event
+- broken chains and cycles
+- legacy v0 and current v1 digest formats
 
-## Security properties
+Always pass `expectedIssuer` in production. Without it, a passport signed by another issuer could be accepted if the caller also supplies that issuer's public key.
 
-- **Ed25519** (RFC 8032) — constant-time verification, no timing oracle
-- **Canonical JSON** (RFC 8785-style, key-sorted) — prevents key-ordering bypass
-- **SHA-256 hash-chain** — tamper detection across the full event sequence
-- **No network calls** in `verifyPassport` and `verifyChain` — pass the public key directly
-- **HTTPS-only JWKS fetch** — SSRF/MITM protection (OWASP A10)
+## JWKS Fetching
 
-## Specification
+`fetchPublicKeyFromJwks(url, keyId)` is a convenience helper for trusted JWKS endpoints. It enforces HTTPS, disables redirects, rejects private and loopback literal hosts, resolves DNS before fetch, and rejects hostnames resolving to private or loopback addresses.
 
-The full passport format is defined in the [AgentSigna Passport Specification](https://github.com/agentsigna/spec).
+Do not pass user-controlled JWKS URLs. If users can choose trust anchors, store allowlisted issuer metadata server-side and fetch keys from those configured issuers only.
 
-## License
+## Release Checklist
 
-[MIT](./LICENSE)
+Before publishing:
+
+```bash
+npm run pack:check
+npm publish --provenance --access public
+```
+
+Package maintainers should enforce npm account 2FA and publish from CI with trusted publishing or provenance enabled. The release gate should fail if the packed tarball omits `README.md` or `LICENSE`, omits the ESM package marker, or includes compiled test files.

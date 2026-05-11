@@ -18,6 +18,8 @@
  */
 
 import { createHash, createPublicKey, verify as nodeVerify, KeyObject } from 'node:crypto';
+import { lookup } from 'node:dns/promises';
+import { isIP } from 'node:net';
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
@@ -470,13 +472,10 @@ export async function fetchPublicKeyFromJwks(
   jwksUrl: string,
   keyId?: string,
 ): Promise<KeyObject> {
-  if (!jwksUrl.startsWith('https://')) {
-    throw new Error(
-      `SSRF/MITM protection: JWKS URL must use HTTPS. Got: ${jwksUrl}`,
-    );
-  }
+  const url = validateHttpsUrl(jwksUrl);
+  await assertPublicHostname(url.hostname);
 
-  const res = await fetch(jwksUrl, {
+  const res = await fetch(url.toString(), {
     headers: { Accept: 'application/json' },
     // Prevent HTTPS→HTTP downgrade attacks via redirect chains
     redirect: 'error',
@@ -484,7 +483,7 @@ export async function fetchPublicKeyFromJwks(
   });
 
   if (!res.ok) {
-    throw new Error(`Failed to fetch JWKS from ${jwksUrl}: HTTP ${res.status}`);
+    throw new Error(`Failed to fetch JWKS from ${url.toString()}: HTTP ${res.status}`);
   }
 
   const jwks = (await res.json()) as JWKS;
@@ -506,6 +505,98 @@ export async function fetchPublicKeyFromJwks(
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return createPublicKey({ key: key as any, format: 'jwk' });
+}
+
+function validateHttpsUrl(rawUrl: string): URL {
+  let url: URL;
+  try {
+    url = new URL(rawUrl);
+  } catch {
+    throw new Error(`Invalid JWKS URL: ${rawUrl}`);
+  }
+
+  if (url.protocol !== 'https:') {
+    throw new Error(
+      `SSRF/MITM protection: JWKS URL must use HTTPS. Got: ${rawUrl}`,
+    );
+  }
+
+  return url;
+}
+
+async function assertPublicHostname(hostname: string): Promise<void> {
+  if (isPrivateHostnameLiteral(hostname)) {
+    throw new Error(`SSRF protection: JWKS hostname is private or loopback: ${hostname}`);
+  }
+
+  const addresses = await lookup(hostname, { all: true, verbatim: true });
+  if (addresses.length === 0) {
+    throw new Error(`JWKS hostname did not resolve: ${hostname}`);
+  }
+
+  const privateAddress = addresses.find((entry) => isPrivateIp(entry.address));
+  if (privateAddress) {
+    throw new Error(
+      `SSRF protection: JWKS hostname resolved to private or loopback address: ${privateAddress.address}`,
+    );
+  }
+}
+
+function isPrivateHostnameLiteral(hostname: string): boolean {
+  const normalized = hostname.toLowerCase().replace(/^\[|\]$/g, '');
+  if (normalized === 'localhost') return true;
+
+  const ipv4 = parseIpv4(normalized);
+  if (ipv4) return isPrivateIpv4(ipv4);
+
+  if (isIP(normalized) === 6) {
+    return isPrivateIpv6(normalized);
+  }
+
+  return false;
+}
+
+function isPrivateIp(address: string): boolean {
+  const normalized = address.toLowerCase();
+  const ipv4 = parseIpv4(normalized);
+  if (ipv4) return isPrivateIpv4(ipv4);
+  return isPrivateIpv6(normalized);
+}
+
+function parseIpv4(value: string): number[] | null {
+  const parts = value.split('.');
+  if (parts.length !== 4) return null;
+  const octets = parts.map((part) => Number(part));
+  if (octets.some((part) => !Number.isInteger(part) || part < 0 || part > 255)) return null;
+  return octets;
+}
+
+function isPrivateIpv4([a, b]: number[]): boolean {
+  return (
+    a === 0 ||
+    a === 10 ||
+    a === 127 ||
+    (a === 100 && b >= 64 && b <= 127) ||
+    (a === 169 && b === 254) ||
+    (a === 172 && b >= 16 && b <= 31) ||
+    (a === 192 && b === 168) ||
+    a >= 224
+  );
+}
+
+function isPrivateIpv6(address: string): boolean {
+  const normalized = address.replace(/^::ffff:/, '');
+  const mappedIpv4 = parseIpv4(normalized);
+  if (mappedIpv4) return isPrivateIpv4(mappedIpv4);
+
+  return (
+    normalized === '::1' ||
+    normalized === '::' ||
+    normalized.startsWith('fc') ||
+    normalized.startsWith('fd') ||
+    normalized.startsWith('fe80:') ||
+    normalized.startsWith('ff')
+  );
 }
 
 /**

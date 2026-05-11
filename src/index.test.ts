@@ -17,6 +17,7 @@ import {
   verifyPassport,
   verifyChain,
   JtiCache,
+  fetchPublicKeyFromJwks,
   Passport,
   PassportPayload,
   LedgerEvent,
@@ -450,5 +451,35 @@ describe('JtiCache', () => {
     const cache = new JtiCache();
     cache.seen('jti-bad-date', 'not-a-date');
     assert.equal(cache.size, 0);
+  });
+});
+
+// â”€â”€ fetchPublicKeyFromJwks â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
+describe('fetchPublicKeyFromJwks', () => {
+  it('rejects non-HTTPS JWKS URLs', async () => {
+    await assert.rejects(
+      () => fetchPublicKeyFromJwks('http://keys.example.test/.well-known/jwks.json'),
+      /must use HTTPS/,
+    );
+  });
+
+  it('rejects loopback JWKS URLs before fetch', async () => {
+    const originalFetch = globalThis.fetch;
+    let called = false;
+    globalThis.fetch = (async () => {
+      called = true;
+      throw new Error('fetch should not be called');
+    }) as typeof fetch;
+
+    try {
+      await assert.rejects(
+        () => fetchPublicKeyFromJwks('https://127.0.0.1/.well-known/jwks.json'),
+        /private or loopback/,
+      );
+      assert.equal(called, false);
+    } finally {
+      globalThis.fetch = originalFetch;
+    }
   });
 });

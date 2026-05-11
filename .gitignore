@@ -1,5 +1,4 @@
-node_modules/
 dist/
-*.tsbuildinfo
-# Never commit npm tokens or local registry config
-.npmrc
+dist-test/
+.npm-cache/
+*.tgz
