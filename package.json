@@ -1,6 +1,6 @@
 {
   "name": "@agentsigna/verify",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Standalone offline verifier for AgentSigna Action Authorization Passports and Ledger Chains. No AgentSigna API dependency.",
   "main": "dist/index.js",
   "module": "dist/esm/index.js",

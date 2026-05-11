@@ -1,5 +1,5 @@
 /**
- * @agentsigna/verify — test suite
+ * @agentsigna/verify test suite
  * Run: npm test (requires npm run build first)
  */
 
@@ -23,11 +23,11 @@ import {
   LedgerEvent,
 } from './index.js';
 
-// ── Test key pair ─────────────────────────────────────────────────────────────
+// Test key pair
 
 const { privateKey, publicKey } = generateKeyPairSync('ed25519');
 
-// ── Helpers ───────────────────────────────────────────────────────────────────
+// Helpers
 
 function stableStringify(value: unknown): string {
   if (value === null || typeof value !== 'object') return JSON.stringify(value);
@@ -43,7 +43,7 @@ function stableStringify(value: unknown): string {
 
 function signPayload(payload: unknown, key: KeyObject): string {
   const message = Buffer.from(stableStringify(payload), 'utf8');
-  // Ed25519 requires null digest — createSign('ed25519') is invalid in Node.js crypto
+  // Ed25519 requires null digest - createSign('ed25519') is invalid in Node.js crypto
   const sig = nodeCryptoSign(null, message, key).toString('base64url');
   return `ed25519:v1:${sig}`;
 }
@@ -85,7 +85,7 @@ function makePassport(payload: PassportPayload, key: KeyObject = privateKey): Pa
   };
 }
 
-// ── verifyPassport ────────────────────────────────────────────────────────────
+// verifyPassport
 
 describe('verifyPassport', () => {
   it('accepts a valid passport', () => {
@@ -237,7 +237,7 @@ describe('verifyPassport', () => {
       expectedIssuer: 'https://api.agentsigna.com/orgs/acme',
     });
     assert.equal(result.valid, false);
-    // Must not throw — must produce a clean error string
+    // Must not throw - must produce a clean error string
     assert.ok(result.errors.some((e) =>
       e.includes('Signature verification failed') || e.includes('Failed to load')
     ));
@@ -251,7 +251,7 @@ describe('verifyPassport', () => {
   });
 });
 
-// ── verifyChain ───────────────────────────────────────────────────────────────
+// verifyChain
 
 function sha256(data: string): string {
   return createHash('sha256').update(data).digest('hex');
@@ -330,6 +330,14 @@ describe('verifyChain', () => {
     assert.ok(result.errors.some((e) => e.includes('broken')));
   });
 
+  it('rejects an empty string previousDigest explicitly', () => {
+    const events = makeChain('case-001', 1);
+    events[0].previousDigest = '';
+    const result = verifyChain(events);
+    assert.equal(result.valid, false);
+    assert.ok(result.errors.some((e) => e.includes('previousDigest must be null or a 64-character lowercase hex digest')));
+  });
+
   it('accepts a single-event chain', () => {
     const events = makeChain('case-001', 1);
     const result = verifyChain(events);
@@ -340,7 +348,7 @@ describe('verifyChain', () => {
 
   it('rejects a self-referential event without hanging (DoS prevention)', () => {
     const events = makeChain('case-001', 2);
-    // Make event[1].previousDigest point to itself — breaks the chain linkage,
+    // Make event[1].previousDigest point to itself - breaks the chain linkage,
     // exits the traversal loop, surfaces as "broken" not an infinite loop
     events[1].previousDigest = events[1].eventDigest;
     const result = verifyChain(events);
@@ -350,7 +358,7 @@ describe('verifyChain', () => {
 
   it('rejects a multi-event cycle without hanging (DoS prevention)', () => {
     // Build three events manually so event[2]'s digest equals event[0]'s digest,
-    // creating a traversal loop: event[0] → event[1] → event[2] → event[0] again
+    // creating a traversal loop: event[0] -> event[1] -> event[2] -> event[0] again
     const caseId = 'cycle-case';
     const digest0 = sha256(`v1:${caseId}:GENESIS:CASE_OPENED:${stableStringify({ _ledgerVersion: 'v1' })}`);
     const digest1 = sha256(`v1:${caseId}:${digest0}:STATUS_CHANGED:${stableStringify({ step: 1 })}`);
@@ -398,7 +406,7 @@ describe('verifyChain', () => {
   });
 });
 
-// ── JtiCache ──────────────────────────────────────────────────────────────────
+// JtiCache
 
 describe('JtiCache', () => {
   it('returns false on first sight of a jti', () => {
@@ -454,7 +462,7 @@ describe('JtiCache', () => {
   });
 });
 
-// â”€â”€ fetchPublicKeyFromJwks â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// fetchPublicKeyFromJwks
 
 describe('fetchPublicKeyFromJwks', () => {
   it('rejects non-HTTPS JWKS URLs', async () => {

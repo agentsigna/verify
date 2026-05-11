@@ -4,24 +4,24 @@
  * Standalone offline verifier for AgentSigna Action Authorization Passports (ASAAP v1.0)
  * and AgentSigna Ledger Chains (ASLC v1.0).
  *
- * Zero runtime dependencies — uses Node.js built-in `crypto` module only.
+ * Zero runtime dependencies - uses Node.js built-in `crypto` module only.
  * Requires Node.js >= 18.0.0.
  *
  * Security properties:
- *  - Ed25519 signature verification (RFC 8032) — constant-time, no timing oracle
- *  - Canonical JSON serialisation (RFC 8785-style, key-sorted) — prevents key-ordering bypass
- *  - Chain integrity via SHA-256 hash-chain — tamper detection across full event sequence
- *  - Cross-case isolation — verifyChain rejects events with mismatched actionCaseIds
- *  - Self-describing algorithm version — auto-detects v0 legacy chains and v1 chains
- *  - No network calls in verifyPassport / verifyChain — no SSRF risk (OWASP A10)
- *  - HTTPS-only JWKS fetch, redirect:error — prevents HTTPS→HTTP downgrade attacks
+ *  - Ed25519 signature verification (RFC 8032) - constant-time, no timing oracle
+ *  - Canonical JSON serialisation (RFC 8785-style, key-sorted) - prevents key-ordering bypass
+ *  - Chain integrity via SHA-256 hash-chain - tamper detection across full event sequence
+ *  - Cross-case isolation - verifyChain rejects events with mismatched actionCaseIds
+ *  - Self-describing algorithm version - auto-detects v0 legacy chains and v1 chains
+ *  - No network calls in verifyPassport / verifyChain - no SSRF risk (OWASP A10)
+ *  - HTTPS-only JWKS fetch, redirect:error - prevents HTTPS-to-HTTP downgrade attacks
  */
 
 import { createHash, createPublicKey, verify as nodeVerify, KeyObject } from 'node:crypto';
 import { lookup } from 'node:dns/promises';
 import { isIP } from 'node:net';
 
-// ── Types ────────────────────────────────────────────────────────────────────
+// Types
 
 export interface PassportPayload {
   spec: 'agentsigna-passport';
@@ -83,7 +83,7 @@ export interface JWKS {
   keys: JWK[];
 }
 
-// ── Verification result types ─────────────────────────────────────────────────
+// Verification result types
 
 export interface PassportVerificationResult {
   valid: boolean;
@@ -113,7 +113,7 @@ export interface ChainVerificationResult {
   tipDigest: string | null;
 }
 
-// ── Canonical JSON (RFC 8785-style) ──────────────────────────────────────────
+// Canonical JSON (RFC 8785-style)
 
 function stableStringify(value: unknown): string {
   if (value === null || typeof value !== 'object') {
@@ -130,7 +130,7 @@ function stableStringify(value: unknown): string {
   return `{${entries.join(',')}}`;
 }
 
-// ── Ed25519 signature verification ───────────────────────────────────────────
+// Ed25519 signature verification
 
 function loadPublicKey(source: string | JWK | KeyObject): KeyObject {
   if (typeof source === 'string') {
@@ -161,7 +161,7 @@ function verifyEd25519(
   }
 }
 
-// ── Ledger chain digest ───────────────────────────────────────────────────────
+// Ledger chain digest
 
 function computeDigest(
   version: string,
@@ -188,7 +188,11 @@ function detectChainVersion(genesisEvent: LedgerEvent | undefined): string {
   return typeof v === 'string' ? v : 'v0';
 }
 
-// ── Public API ────────────────────────────────────────────────────────────────
+function isSha256Hex(value: unknown): value is string {
+  return typeof value === 'string' && /^[0-9a-f]{64}$/.test(value);
+}
+
+// Public API
 
 /**
  * Verifies an AgentSigna passport against a public key (Ed25519 only).
@@ -198,7 +202,7 @@ function detectChainVersion(genesisEvent: LedgerEvent | undefined): string {
  * @param options.expectedIssuer - If provided, the passport issuer field must match exactly.
  *                                 Always set this in production to prevent cross-tenant substitution.
  * @param options.actionPayload - If provided, re-computes actionHash to verify the passport
- *                                was issued for this exact action payload (ASAAP §4.3).
+ *                                was issued for this exact action payload (ASAAP section 4.3).
  *                                An error is returned if the passport has no actionHash to compare.
  * @param options.nowMs - Override clock for testing (default: Date.now())
  *
@@ -221,7 +225,7 @@ export function verifyPassport(
   const warnings: string[] = [];
   const now = options.nowMs ?? Date.now();
 
-  // ── 1. Structural validation ──────────────────────────────────────────────
+  // 1. Structural validation
   if (!passport || typeof passport !== 'object') {
     return { valid: false, errors: ['Passport is not a valid object.'], warnings };
   }
@@ -235,15 +239,15 @@ export function verifyPassport(
 
   const p = passport.payload as PassportPayload;
 
-  // ── 2. Spec version check ─────────────────────────────────────────────────
+  // 2. Spec version check
   if (p.spec !== 'agentsigna-passport') {
     warnings.push(`Unknown spec identifier "${p.spec}". Expected "agentsigna-passport".`);
   }
   if (p.specVersion !== '1.0') {
-    warnings.push(`Passport spec version "${p.specVersion}" — this verifier targets 1.0.`);
+    warnings.push(`Passport spec version "${p.specVersion}" - this verifier targets 1.0.`);
   }
 
-  // ── 3. Issuer validation ──────────────────────────────────────────────────
+  // 3. Issuer validation
   if (options.expectedIssuer) {
     if (!p.issuer) {
       errors.push('Passport payload is missing issuer field.');
@@ -260,12 +264,12 @@ export function verifyPassport(
     );
   }
 
-  // ── 4. Revocation check ───────────────────────────────────────────────────
+  // 4. Revocation check
   if (passport.status === 'REVOKED') {
     errors.push('Passport has been revoked.');
   }
 
-  // ── 5. Expiry check ───────────────────────────────────────────────────────
+  // 5. Expiry check
   const expiresAt = new Date(p.expiresAt).getTime();
   if (Number.isNaN(expiresAt)) {
     errors.push('Passport expiresAt is not a valid date.');
@@ -273,7 +277,7 @@ export function verifyPassport(
     errors.push(`Passport expired at ${p.expiresAt}.`);
   }
 
-  // ── 6. jti presence (replay protection) ───────────────────────────────────
+  // 6. jti presence (replay protection)
   if (!p.jti || typeof p.jti !== 'string') {
     warnings.push(
       'Passport is missing jti field (replay protection identifier). ' +
@@ -281,7 +285,7 @@ export function verifyPassport(
     );
   }
 
-  // ── 7. Signature verification ─────────────────────────────────────────────
+  // 7. Signature verification
   // Always attempt signature verification regardless of other errors so that
   // tamper evidence is always surfaced in the error list.
   if (passport.signature) {
@@ -289,7 +293,7 @@ export function verifyPassport(
       const key = loadPublicKey(publicKey);
       const sigValid = verifyEd25519(passport.payload, passport.signature, key);
       if (!sigValid) {
-        errors.push('Signature verification failed — payload may have been tampered with.');
+        errors.push('Signature verification failed - payload may have been tampered with.');
       }
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : String(err);
@@ -297,12 +301,12 @@ export function verifyPassport(
     }
   }
 
-  // ── 8. Action payload integrity (optional) ────────────────────────────────
+  // 8. Action payload integrity (optional)
   let actionHashVerified = false;
   if (options.actionPayload !== undefined) {
     if (!p.actionHash) {
       // Caller requested integrity check but the passport was issued without an actionHash.
-      // Surface as an error rather than silently skipping — the caller's expectation was not met.
+      // Surface as an error rather than silently skipping - the caller's expectation was not met.
       errors.push(
         'actionPayload was provided for integrity verification, but the passport has no ' +
           'actionHash. Cannot confirm the passport covers this specific payload.',
@@ -314,7 +318,7 @@ export function verifyPassport(
       actionHashVerified = recomputed === p.actionHash;
       if (!actionHashVerified) {
         errors.push(
-          'actionHash mismatch — the action payload does not match what was authorized. ' +
+          'actionHash mismatch - the action payload does not match what was authorized. ' +
             'Possible tampering.',
         );
       }
@@ -344,7 +348,7 @@ export function verifyPassport(
 /**
  * Verifies the integrity of an AgentSigna ledger event chain.
  *
- * Events may be provided in any order — the verifier reconstructs the chain
+ * Events may be provided in any order - the verifier reconstructs the chain
  * by following previousDigest links (immune to timestamp manipulation).
  *
  * All events must share the same actionCaseId. Mixed-case event sets are rejected
@@ -370,7 +374,7 @@ export function verifyChain(events: LedgerEvent[]): ChainVerificationResult {
     };
   }
 
-  // ── Cross-case isolation — all events must belong to the same action case ──
+  // Cross-case isolation - all events must belong to the same action case
   const caseIds = new Set(events.map((e) => e.actionCaseId));
   if (caseIds.size > 1) {
     return {
@@ -387,7 +391,32 @@ export function verifyChain(events: LedgerEvent[]): ChainVerificationResult {
     };
   }
 
-  // ── Reconstruct chain from genesis by following previousDigest links ───────
+  for (const event of events) {
+    if (!isSha256Hex(event.eventDigest)) {
+      return {
+        valid: false,
+        errors: [`Event ${event.id}: eventDigest must be a 64-character lowercase hex digest.`],
+        checkedEvents: 0,
+        chainVersion: 'unknown',
+        genesisDigest: null,
+        tipDigest: null,
+      };
+    }
+    if (event.previousDigest !== null && !isSha256Hex(event.previousDigest)) {
+      return {
+        valid: false,
+        errors: [
+          `Event ${event.id}: previousDigest must be null or a 64-character lowercase hex digest.`,
+        ],
+        checkedEvents: 0,
+        chainVersion: 'unknown',
+        genesisDigest: null,
+        tipDigest: null,
+      };
+    }
+  }
+
+  // Reconstruct chain from genesis by following previousDigest links
   const byPreviousDigest = new Map<string | null, LedgerEvent>();
   for (const event of events) {
     byPreviousDigest.set(event.previousDigest, event);
@@ -397,10 +426,10 @@ export function verifyChain(events: LedgerEvent[]): ChainVerificationResult {
   const visitedDigests = new Set<string>();
   let current = byPreviousDigest.get(null);
   while (current) {
-    // Cycle detection — a self-referential or looping chain would otherwise hang indefinitely
+    // Cycle detection - a self-referential or looping chain would otherwise hang indefinitely
     if (visitedDigests.has(current.eventDigest)) {
       errors.push(
-        `Cycle detected at event ${current.id} (digest ${current.eventDigest.slice(0, 16)}…) — ` +
+        `Cycle detected at event ${current.id} (digest ${current.eventDigest.slice(0, 16)}...) - ` +
           'chain is self-referential or contains a loop. Possible tampering.',
       );
       break;
@@ -417,11 +446,11 @@ export function verifyChain(events: LedgerEvent[]): ChainVerificationResult {
     );
   }
 
-  // ── Detect algorithm version from genesis event ───────────────────────────
+  // Detect algorithm version from genesis event
   const chainVersion = detectChainVersion(ordered[0]);
   const actionCaseId = ordered[0]?.actionCaseId ?? '';
 
-  // ── Re-compute and verify every digest ────────────────────────────────────
+  // Re-compute and verify every digest
   let previousDigest: string | null = null;
   for (const event of ordered) {
     const expected = computeDigest(
@@ -441,7 +470,7 @@ export function verifyChain(events: LedgerEvent[]): ChainVerificationResult {
     }
     if (event.eventDigest !== expected) {
       errors.push(
-        `Event ${event.id} (${event.eventType}): digest mismatch — event was tampered with.`,
+        `Event ${event.id} (${event.eventType}): digest mismatch - event was tampered with.`,
       );
       break;
     }
@@ -460,11 +489,11 @@ export function verifyChain(events: LedgerEvent[]): ChainVerificationResult {
 
 /**
  * Fetches a JWKS from a URL and returns the first Ed25519 key.
- * For auditor tooling — call once and cache the result.
+ * For auditor tooling - call once and cache the result.
  *
  * Security:
  * - HTTPS-only input URL (rejects HTTP to prevent initial MITM, OWASP A10)
- * - redirect:'error' (prevents HTTPS→HTTP downgrade via redirect)
+ * - redirect:'error' (prevents HTTPS-to-HTTP downgrade via redirect)
  * - 10-second timeout (AbortSignal.timeout, Node 18+)
  * - Does NOT execute fetched content
  */
@@ -477,7 +506,7 @@ export async function fetchPublicKeyFromJwks(
 
   const res = await fetch(url.toString(), {
     headers: { Accept: 'application/json' },
-    // Prevent HTTPS→HTTP downgrade attacks via redirect chains
+    // Prevent HTTPS-to-HTTP downgrade attacks via redirect chains
     redirect: 'error',
     signal: AbortSignal.timeout(10_000),
   });
@@ -602,7 +631,7 @@ function isPrivateIpv6(address: string): boolean {
 /**
  * In-memory jti cache for replay attack detection.
  *
- * Passports are single-use — if you receive the same jti twice, it is a replay.
+ * Passports are single-use - if you receive the same jti twice, it is a replay.
  * This cache automatically evicts expired entries to prevent unbounded memory growth.
  *
  * Usage:
