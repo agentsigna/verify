@@ -1,0 +1,2682 @@
+{
+  "description": "Passports issued by the AgentSigna issuing code path with deterministic test keys. Test keys only: never trust these keys for real passports.",
+  "jwks": {
+    "keys": [
+      {
+        "crv": "Ed25519",
+        "x": "shoGE63C723BslWkuJT4lzotYcG17vMSBJUy77R1Ius",
+        "kty": "OKP",
+        "kid": "fixture-2026-b",
+        "use": "sig",
+        "alg": "EdDSA"
+      },
+      {
+        "crv": "Ed25519",
+        "x": "PkQRqaXZ4gU0LwohWgTc12TMF9kJLRA_qKV4_ZW9HIY",
+        "kty": "OKP",
+        "kid": "fixture-2026-a",
+        "use": "sig",
+        "alg": "EdDSA"
+      }
+    ]
+  },
+  "keys": {
+    "fixture-2026-a": {
+      "publicKeyPem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAPkQRqaXZ4gU0LwohWgTc12TMF9kJLRA/qKV4/ZW9HIY=\n-----END PUBLIC KEY-----\n"
+    },
+    "fixture-2026-b": {
+      "publicKeyPem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAshoGE63C723BslWkuJT4lzotYcG17vMSBJUy77R1Ius=\n-----END PUBLIC KEY-----\n"
+    },
+    "fixture-unrelated": {
+      "publicKeyPem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAKAEUp6XqjbYFGQtBTu1Cq3y7oh+sxKYl5v7Puzv0z3A=\n-----END PUBLIC KEY-----\n"
+    }
+  },
+  "cases": [
+    {
+      "name": "auto-allow, key A, relative publicKeyRef",
+      "kid": "fixture-2026-a",
+      "passport": {
+        "id": "50f78963-6896-4047-a253-b897d89d0632",
+        "actionCaseId": "b73effc9-9586-4db0-a559-5ecf994cb992",
+        "status": "ACTIVE",
+        "issuedAt": "2026-10-14T18:26:43.763Z",
+        "expiresAt": "2026-10-15T18:26:43.763Z",
+        "signature": "ed25519:fixture-2026-a:0X-tFMsr8Sze6JHwdSfhqebf0TJrlBIt3_EMtomN-Mz0BlrdYFN3X0LtRSt3ARdDo83YXfaj9gaG3ysyQMbUAA",
+        "payload": {
+          "spec": "agentsigna-passport",
+          "specVersion": "1.0",
+          "jti": "66badc55-5d37-4b59-9792-0735ced0a714",
+          "actionHash": "272d2a9c94d4ad7bab29e76ff063801439e8b404b2ec752a78c7d7b2433c14a5",
+          "publicKeyRef": "/.well-known/agentsigna-jwks.json",
+          "issuer": "agentsigna",
+          "actionCaseId": "b73effc9-9586-4db0-a559-5ecf994cb992",
+          "machineActorId": "fe60e3d3-384c-4a02-ac19-3a3d158d3ed0",
+          "policyId": "295239ad-b677-4bfc-af5e-a99a0535e316",
+          "actionType": "PURCHASE_ORDER_CREATE",
+          "amount": 4800,
+          "currency": "USD",
+          "counterpartyId": null,
+          "counterpartyName": null,
+          "decision": "ALLOW",
+          "rationale": "Within policy: amount below the approval threshold.",
+          "approvalChain": [],
+          "issuedAt": "2026-10-14T18:26:43.763Z",
+          "expiresAt": "2026-10-15T18:26:43.763Z"
+        },
+        "createdAt": "2026-10-14T18:26:43.763Z"
+      },
+      "actionPayload": {
+        "requestId": "PR-1",
+        "lineItems": [
+          {
+            "sku": "A-1",
+            "qty": 2,
+            "unitPrice": 2400
+          }
+        ]
+      }
+    },
+    {
+      "name": "allow-with-conditions, unicode and nested payload, key A",
+      "kid": "fixture-2026-a",
+      "passport": {
+        "id": "da0f18da-5854-4fed-8453-aae1f82a01d6",
+        "actionCaseId": "a8bd609a-80e2-4b8d-a338-bb0c3c9469e0",
+        "status": "ACTIVE",
+        "issuedAt": "2026-10-14T18:26:43.766Z",
+        "expiresAt": "2026-10-15T18:26:43.766Z",
+        "signature": "ed25519:fixture-2026-a:LyVgm8315cDiOocb_C6yJNz2S-FBSYSuk2zd6Ny6erCHHUTH34R6dtIeQYdHrxy5fj3Qh3t6PIDApi41BBPnBQ",
+        "payload": {
+          "spec": "agentsigna-passport",
+          "specVersion": "1.0",
+          "jti": "9da75394-d27d-4a25-838c-3802504ebd9a",
+          "actionHash": "95ad2d42aa23eeb5d86cc14ed163ce2f878bb58b356dd075c47495db8d3ee1f1",
+          "publicKeyRef": "/.well-known/agentsigna-jwks.json",
+          "issuer": "agentsigna",
+          "actionCaseId": "a8bd609a-80e2-4b8d-a338-bb0c3c9469e0",
+          "machineActorId": "9ae96503-de52-4e06-ad41-6f3c8c4b8848",
+          "policyId": "57108050-24c7-4774-abad-d64f582b655a",
+          "actionType": "PURCHASE_ORDER_CREATE",
+          "amount": 1250.5,
+          "currency": "EUR",
+          "counterpartyId": "4a934e77-29a9-4c4e-ae28-6297a591f60e",
+          "counterpartyName": "Société Générale d’Équipement éè 日本 🚀",
+          "decision": "ALLOW_WITH_CONDITIONS",
+          "rationale": "Allowed with conditions: new counterparty.",
+          "approvalChain": [],
+          "issuedAt": "2026-10-14T18:26:43.766Z",
+          "expiresAt": "2026-10-15T18:26:43.766Z"
+        },
+        "createdAt": "2026-10-14T18:26:43.766Z"
+      },
+      "actionPayload": {
+        "b": 1,
+        "a": {
+          "z": null,
+          "y": [
+            3,
+            2,
+            1
+          ],
+          "x": "line\nbreak \"quoted\" \\ back"
+        },
+        "B": true,
+        "～": "fullwidth tilde",
+        "😀": "astral key",
+        "é": "e acute",
+        "n": {
+          "big": 12345678901234568,
+          "small": 0.000001,
+          "neg": -0.5,
+          "exp": 1e+21
+        },
+        "empty": {},
+        "list": []
+      }
+    },
+    {
+      "name": "human approval, comment null, key A",
+      "kid": "fixture-2026-a",
+      "passport": {
+        "id": "bcf1465e-b89f-4465-af3f-f8497437274f",
+        "actionCaseId": "f431cf42-b7fc-4f87-a496-bc229f640bd0",
+        "status": "ACTIVE",
+        "issuedAt": "2026-10-14T18:26:43.767Z",
+        "expiresAt": "2026-10-15T18:26:43.767Z",
+        "signature": "ed25519:fixture-2026-a:F7G4kkmSWz2HNDgkqbhmkOj1XCR6EAesU0Gab2WJc8Ui3OT9ZOcRDAekeh8YN1z5e1zfNnBGxTQP2n9hMh5dAA",
+        "payload": {
+          "spec": "agentsigna-passport",
+          "specVersion": "1.0",
+          "jti": "f407b8c4-ec04-4a71-b9c5-df156d4d6e9b",
+          "actionHash": "c2eb6b4a2d677f7970935e7094d33444d9b4a82b9883d24fd44bc6720fb11976",
+          "publicKeyRef": "/.well-known/agentsigna-jwks.json",
+          "issuer": "agentsigna",
+          "actionCaseId": "f431cf42-b7fc-4f87-a496-bc229f640bd0",
+          "machineActorId": "47f5933d-85ea-4675-adc0-14ee9616740d",
+          "policyId": "31d4f572-519c-4ee6-af59-0760c5b2d38b",
+          "actionType": "WIRE_TRANSFER_INITIATE",
+          "amount": 98000,
+          "currency": "USD",
+          "counterpartyId": null,
+          "counterpartyName": null,
+          "decision": "ALLOW",
+          "rationale": "Approved by human approver.",
+          "approvalChain": [
+            {
+              "approverId": "3b22ee75-11ba-4192-aa2d-7547f66fee71",
+              "decision": "ALLOW",
+              "comment": null,
+              "createdAt": "2026-10-14T18:26:43.767Z"
+            }
+          ],
+          "issuedAt": "2026-10-14T18:26:43.767Z",
+          "expiresAt": "2026-10-15T18:26:43.767Z"
+        },
+        "createdAt": "2026-10-14T18:26:43.767Z"
+      },
+      "actionPayload": {
+        "requestId": "PR-3",
+        "lineItems": [
+          {
+            "sku": "A-1",
+            "qty": 2,
+            "unitPrice": 2400
+          }
+        ]
+      }
+    },
+    {
+      "name": "no action payload (actionHash null), key A",
+      "kid": "fixture-2026-a",
+      "passport": {
+        "id": "42472485-f0dc-4dcf-9371-ecd57980f84c",
+        "actionCaseId": "7601accf-3a79-4f97-ab76-50223695b169",
+        "status": "ACTIVE",
+        "issuedAt": "2026-10-14T18:26:43.768Z",
+        "expiresAt": "2026-10-15T18:26:43.768Z",
+        "signature": "ed25519:fixture-2026-a:5Pz1rwP7HNjLtblA_i0MG0BnLbfHEB6tmIHwTVBMJ5bcq5qmnpXp8szYUBTtMoZ2wQvoootzSdU1gn4YSUHLAA",
+        "payload": {
+          "spec": "agentsigna-passport",
+          "specVersion": "1.0",
+          "jti": "07194414-ae72-4a0b-bd6d-336f9a4f5c06",
+          "actionHash": null,
+          "publicKeyRef": "/.well-known/agentsigna-jwks.json",
+          "issuer": "agentsigna",
+          "actionCaseId": "7601accf-3a79-4f97-ab76-50223695b169",
+          "machineActorId": "44e2652f-4064-4b43-a527-9913da41088b",
+          "policyId": "407bd551-008d-4ce9-ad7c-a14bbbac874d",
+          "actionType": null,
+          "amount": null,
+          "currency": null,
+          "counterpartyId": null,
+          "counterpartyName": null,
+          "decision": "ALLOW",
+          "rationale": "Within policy.",
+          "approvalChain": [],
+          "issuedAt": "2026-10-14T18:26:43.768Z",
+          "expiresAt": "2026-10-15T18:26:43.768Z"
+        },
+        "createdAt": "2026-10-14T18:26:43.768Z"
+      },
+      "actionPayload": null
+    },
+    {
+      "name": "auto-allow after rotation, key B, absolute publicKeyRef",
+      "kid": "fixture-2026-b",
+      "passport": {
+        "id": "91b33d07-e524-4bef-94c7-4ab5f3b48948",
+        "actionCaseId": "f274a646-0f9e-4d00-a5e8-dbf22538f665",
+        "status": "ACTIVE",
+        "issuedAt": "2026-10-14T18:26:43.770Z",
+        "expiresAt": "2026-10-15T18:26:43.770Z",
+        "signature": "ed25519:fixture-2026-b:WBt9NKOz8fMy-b3cgXcM-nhmuaGBXm_2ibPRSBfOLT-wZBlXD8UfilKybdnS3XwhKXAaxLcFL9-jupS3kX_pAA",
+        "payload": {
+          "spec": "agentsigna-passport",
+          "specVersion": "1.0",
+          "jti": "5841b0ee-a261-4e63-82b2-6741b735a128",
+          "actionHash": "0d3444ba8d2fda87d56ca8bbe1380c0ae825d5de932f1f11c2a18c79bc635dc9",
+          "publicKeyRef": "https://api.agentsigna.com/.well-known/agentsigna-jwks.json",
+          "issuer": "agentsigna",
+          "actionCaseId": "f274a646-0f9e-4d00-a5e8-dbf22538f665",
+          "machineActorId": "2cc14020-f06d-4016-a2d1-5a44d697461a",
+          "policyId": "2bb8767b-fa19-4616-a8b2-09f7857691d1",
+          "actionType": "PURCHASE_ORDER_CREATE",
+          "amount": 4800,
+          "currency": "USD",
+          "counterpartyId": null,
+          "counterpartyName": null,
+          "decision": "ALLOW",
+          "rationale": "Within policy: amount below the approval threshold.",
+          "approvalChain": [],
+          "issuedAt": "2026-10-14T18:26:43.770Z",
+          "expiresAt": "2026-10-15T18:26:43.770Z"
+        },
+        "createdAt": "2026-10-14T18:26:43.770Z"
+      },
+      "actionPayload": {
+        "requestId": "PR-5",
+        "lineItems": [
+          {
+            "sku": "A-1",
+            "qty": 2,
+            "unitPrice": 2400
+          }
+        ]
+      }
+    },
+    {
+      "name": "human approval with comment after rotation, key B",
+      "kid": "fixture-2026-b",
+      "passport": {
+        "id": "e65b2391-4972-4e03-b5c2-453ffebc3568",
+        "actionCaseId": "7bbbeeb6-7bc6-4674-ab1b-8b103ff6c516",
+        "status": "ACTIVE",
+        "issuedAt": "2026-10-14T18:26:43.772Z",
+        "expiresAt": "2026-10-15T18:26:43.772Z",
+        "signature": "ed25519:fixture-2026-b:sdBm2JtBSNIvR_X6wBolMrijYRVLZKbIVHJpR988eaVyz1bfqJJuYCwrhR0dJwsNQxmwgRVDT4TId3qJ8DoeDg",
+        "payload": {
+          "spec": "agentsigna-passport",
+          "specVersion": "1.0",
+          "jti": "bdf689b5-3254-4d01-803c-e0ddc283165e",
+          "actionHash": "9df07893508d7da1feb8811167d4470164fdc96ac0ee467a60beb12e63973eca",
+          "publicKeyRef": "https://api.agentsigna.com/.well-known/agentsigna-jwks.json",
+          "issuer": "agentsigna",
+          "actionCaseId": "7bbbeeb6-7bc6-4674-ab1b-8b103ff6c516",
+          "machineActorId": "d5cbf963-1ce9-4c79-a868-0fb3606c0a20",
+          "policyId": "1c0c7e28-1041-4e9c-aee0-a398d8be1cd9",
+          "actionType": "PURCHASE_ORDER_CREATE",
+          "amount": 15000,
+          "currency": "USD",
+          "counterpartyId": null,
+          "counterpartyName": null,
+          "decision": "ALLOW",
+          "rationale": "Approved by human approver.",
+          "approvalChain": [
+            {
+              "approverId": "868838e5-43cf-4ae0-a38d-8d62ff0df6bb",
+              "decision": "ALLOW",
+              "comment": "Checked against contract 2026-114.",
+              "createdAt": "2026-10-14T18:26:43.772Z"
+            }
+          ],
+          "issuedAt": "2026-10-14T18:26:43.772Z",
+          "expiresAt": "2026-10-15T18:26:43.772Z"
+        },
+        "createdAt": "2026-10-14T18:26:43.772Z"
+      },
+      "actionPayload": {
+        "requestId": "PR-6",
+        "lineItems": [
+          {
+            "sku": "A-1",
+            "qty": 2,
+            "unitPrice": 2400
+          }
+        ]
+      }
+    }
+  ],
+  "regression": [
+    {
+      "case": "auto-allow, key A, relative publicKeyRef",
+      "variant": "as issued",
+      "keyForm": "pem",
+      "keyKid": "fixture-2026-a",
+      "passport": {
+        "id": "50f78963-6896-4047-a253-b897d89d0632",
+        "actionCaseId": "b73effc9-9586-4db0-a559-5ecf994cb992",
+        "status": "ACTIVE",
+        "issuedAt": "2026-10-14T18:26:43.763Z",
+        "expiresAt": "2026-10-15T18:26:43.763Z",
+        "signature": "ed25519:fixture-2026-a:0X-tFMsr8Sze6JHwdSfhqebf0TJrlBIt3_EMtomN-Mz0BlrdYFN3X0LtRSt3ARdDo83YXfaj9gaG3ysyQMbUAA",
+        "payload": {
+          "spec": "agentsigna-passport",
+          "specVersion": "1.0",
+          "jti": "66badc55-5d37-4b59-9792-0735ced0a714",
+          "actionHash": "272d2a9c94d4ad7bab29e76ff063801439e8b404b2ec752a78c7d7b2433c14a5",
+          "publicKeyRef": "/.well-known/agentsigna-jwks.json",
+          "issuer": "agentsigna",
+          "actionCaseId": "b73effc9-9586-4db0-a559-5ecf994cb992",
+          "machineActorId": "fe60e3d3-384c-4a02-ac19-3a3d158d3ed0",
+          "policyId": "295239ad-b677-4bfc-af5e-a99a0535e316",
+          "actionType": "PURCHASE_ORDER_CREATE",
+          "amount": 4800,
+          "currency": "USD",
+          "counterpartyId": null,
+          "counterpartyName": null,
+          "decision": "ALLOW",
+          "rationale": "Within policy: amount below the approval threshold.",
+          "approvalChain": [],
+          "issuedAt": "2026-10-14T18:26:43.763Z",
+          "expiresAt": "2026-10-15T18:26:43.763Z"
+        },
+        "createdAt": "2026-10-14T18:26:43.763Z"
+      },
+      "nowMs": 1792002463763,
+      "v111Valid": true,
+      "v111Errors": []
+    },
+    {
+      "case": "auto-allow, key A, relative publicKeyRef",
+      "variant": "as issued",
+      "keyForm": "jwk",
+      "keyKid": "fixture-2026-a",
+      "passport": {
+        "id": "50f78963-6896-4047-a253-b897d89d0632",
+        "actionCaseId": "b73effc9-9586-4db0-a559-5ecf994cb992",
+        "status": "ACTIVE",
+        "issuedAt": "2026-10-14T18:26:43.763Z",
+        "expiresAt": "2026-10-15T18:26:43.763Z",
+        "signature": "ed25519:fixture-2026-a:0X-tFMsr8Sze6JHwdSfhqebf0TJrlBIt3_EMtomN-Mz0BlrdYFN3X0LtRSt3ARdDo83YXfaj9gaG3ysyQMbUAA",
+        "payload": {
+          "spec": "agentsigna-passport",
+          "specVersion": "1.0",
+          "jti": "66badc55-5d37-4b59-9792-0735ced0a714",
+          "actionHash": "272d2a9c94d4ad7bab29e76ff063801439e8b404b2ec752a78c7d7b2433c14a5",
+          "publicKeyRef": "/.well-known/agentsigna-jwks.json",
+          "issuer": "agentsigna",
+          "actionCaseId": "b73effc9-9586-4db0-a559-5ecf994cb992",
+          "machineActorId": "fe60e3d3-384c-4a02-ac19-3a3d158d3ed0",
+          "policyId": "295239ad-b677-4bfc-af5e-a99a0535e316",
+          "actionType": "PURCHASE_ORDER_CREATE",
+          "amount": 4800,
+          "currency": "USD",
+          "counterpartyId": null,
+          "counterpartyName": null,
+          "decision": "ALLOW",
+          "rationale": "Within policy: amount below the approval threshold.",
+          "approvalChain": [],
+          "issuedAt": "2026-10-14T18:26:43.763Z",
+          "expiresAt": "2026-10-15T18:26:43.763Z"
+        },
+        "createdAt": "2026-10-14T18:26:43.763Z"
+      },
+      "nowMs": 1792002463763,
+      "v111Valid": true,
+      "v111Errors": []
+    },
+    {
+      "case": "auto-allow, key A, relative publicKeyRef",
+      "variant": "as issued",
+      "keyForm": "jwk-without-kid",
+      "keyKid": "fixture-2026-a",
+      "passport": {
+        "id": "50f78963-6896-4047-a253-b897d89d0632",
+        "actionCaseId": "b73effc9-9586-4db0-a559-5ecf994cb992",
+        "status": "ACTIVE",
+        "issuedAt": "2026-10-14T18:26:43.763Z",
+        "expiresAt": "2026-10-15T18:26:43.763Z",
+        "signature": "ed25519:fixture-2026-a:0X-tFMsr8Sze6JHwdSfhqebf0TJrlBIt3_EMtomN-Mz0BlrdYFN3X0LtRSt3ARdDo83YXfaj9gaG3ysyQMbUAA",
+        "payload": {
+          "spec": "agentsigna-passport",
+          "specVersion": "1.0",
+          "jti": "66badc55-5d37-4b59-9792-0735ced0a714",
+          "actionHash": "272d2a9c94d4ad7bab29e76ff063801439e8b404b2ec752a78c7d7b2433c14a5",
+          "publicKeyRef": "/.well-known/agentsigna-jwks.json",
+          "issuer": "agentsigna",
+          "actionCaseId": "b73effc9-9586-4db0-a559-5ecf994cb992",
+          "machineActorId": "fe60e3d3-384c-4a02-ac19-3a3d158d3ed0",
+          "policyId": "295239ad-b677-4bfc-af5e-a99a0535e316",
+          "actionType": "PURCHASE_ORDER_CREATE",
+          "amount": 4800,
+          "currency": "USD",
+          "counterpartyId": null,
+          "counterpartyName": null,
+          "decision": "ALLOW",
+          "rationale": "Within policy: amount below the approval threshold.",
+          "approvalChain": [],
+          "issuedAt": "2026-10-14T18:26:43.763Z",
+          "expiresAt": "2026-10-15T18:26:43.763Z"
+        },
+        "createdAt": "2026-10-14T18:26:43.763Z"
+      },
+      "nowMs": 1792002463763,
+      "v111Valid": true,
+      "v111Errors": []
+    },
+    {
+      "case": "auto-allow, key A, relative publicKeyRef",
+      "variant": "with action payload",
+      "keyForm": "jwk",
+      "keyKid": "fixture-2026-a",
+      "passport": {
+        "id": "50f78963-6896-4047-a253-b897d89d0632",
+        "actionCaseId": "b73effc9-9586-4db0-a559-5ecf994cb992",
+        "status": "ACTIVE",
+        "issuedAt": "2026-10-14T18:26:43.763Z",
+        "expiresAt": "2026-10-15T18:26:43.763Z",
+        "signature": "ed25519:fixture-2026-a:0X-tFMsr8Sze6JHwdSfhqebf0TJrlBIt3_EMtomN-Mz0BlrdYFN3X0LtRSt3ARdDo83YXfaj9gaG3ysyQMbUAA",
+        "payload": {
+          "spec": "agentsigna-passport",
+          "specVersion": "1.0",
+          "jti": "66badc55-5d37-4b59-9792-0735ced0a714",
+          "actionHash": "272d2a9c94d4ad7bab29e76ff063801439e8b404b2ec752a78c7d7b2433c14a5",
+          "publicKeyRef": "/.well-known/agentsigna-jwks.json",
+          "issuer": "agentsigna",
+          "actionCaseId": "b73effc9-9586-4db0-a559-5ecf994cb992",
+          "machineActorId": "fe60e3d3-384c-4a02-ac19-3a3d158d3ed0",
+          "policyId": "295239ad-b677-4bfc-af5e-a99a0535e316",
+          "actionType": "PURCHASE_ORDER_CREATE",
+          "amount": 4800,
+          "currency": "USD",
+          "counterpartyId": null,
+          "counterpartyName": null,
+          "decision": "ALLOW",
+          "rationale": "Within policy: amount below the approval threshold.",
+          "approvalChain": [],
+          "issuedAt": "2026-10-14T18:26:43.763Z",
+          "expiresAt": "2026-10-15T18:26:43.763Z"
+        },
+        "createdAt": "2026-10-14T18:26:43.763Z"
+      },
+      "actionPayload": {
+        "requestId": "PR-1",
+        "lineItems": [
+          {
+            "sku": "A-1",
+            "qty": 2,
+            "unitPrice": 2400
+          }
+        ]
+      },
+      "nowMs": 1792002463763,
+      "v111Valid": true,
+      "v111Errors": []
+    },
+    {
+      "case": "auto-allow, key A, relative publicKeyRef",
+      "variant": "other published key",
+      "keyForm": "pem",
+      "keyKid": "fixture-2026-b",
+      "passport": {
+        "id": "50f78963-6896-4047-a253-b897d89d0632",
+        "actionCaseId": "b73effc9-9586-4db0-a559-5ecf994cb992",
+        "status": "ACTIVE",
+        "issuedAt": "2026-10-14T18:26:43.763Z",
+        "expiresAt": "2026-10-15T18:26:43.763Z",
+        "signature": "ed25519:fixture-2026-a:0X-tFMsr8Sze6JHwdSfhqebf0TJrlBIt3_EMtomN-Mz0BlrdYFN3X0LtRSt3ARdDo83YXfaj9gaG3ysyQMbUAA",
+        "payload": {
+          "spec": "agentsigna-passport",
+          "specVersion": "1.0",
+          "jti": "66badc55-5d37-4b59-9792-0735ced0a714",
+          "actionHash": "272d2a9c94d4ad7bab29e76ff063801439e8b404b2ec752a78c7d7b2433c14a5",
+          "publicKeyRef": "/.well-known/agentsigna-jwks.json",
+          "issuer": "agentsigna",
+          "actionCaseId": "b73effc9-9586-4db0-a559-5ecf994cb992",
+          "machineActorId": "fe60e3d3-384c-4a02-ac19-3a3d158d3ed0",
+          "policyId": "295239ad-b677-4bfc-af5e-a99a0535e316",
+          "actionType": "PURCHASE_ORDER_CREATE",
+          "amount": 4800,
+          "currency": "USD",
+          "counterpartyId": null,
+          "counterpartyName": null,
+          "decision": "ALLOW",
+          "rationale": "Within policy: amount below the approval threshold.",
+          "approvalChain": [],
+          "issuedAt": "2026-10-14T18:26:43.763Z",
+          "expiresAt": "2026-10-15T18:26:43.763Z"
+        },
+        "createdAt": "2026-10-14T18:26:43.763Z"
+      },
+      "nowMs": 1792002463763,
+      "v111Valid": false,
+      "v111Errors": [
+        "Signature verification failed - payload may have been tampered with."
+      ]
+    },
+    {
+      "case": "auto-allow, key A, relative publicKeyRef",
+      "variant": "unrelated key",
+      "keyForm": "pem",
+      "keyKid": "fixture-unrelated",
+      "passport": {
+        "id": "50f78963-6896-4047-a253-b897d89d0632",
+        "actionCaseId": "b73effc9-9586-4db0-a559-5ecf994cb992",
+        "status": "ACTIVE",
+        "issuedAt": "2026-10-14T18:26:43.763Z",
+        "expiresAt": "2026-10-15T18:26:43.763Z",
+        "signature": "ed25519:fixture-2026-a:0X-tFMsr8Sze6JHwdSfhqebf0TJrlBIt3_EMtomN-Mz0BlrdYFN3X0LtRSt3ARdDo83YXfaj9gaG3ysyQMbUAA",
+        "payload": {
+          "spec": "agentsigna-passport",
+          "specVersion": "1.0",
+          "jti": "66badc55-5d37-4b59-9792-0735ced0a714",
+          "actionHash": "272d2a9c94d4ad7bab29e76ff063801439e8b404b2ec752a78c7d7b2433c14a5",
+          "publicKeyRef": "/.well-known/agentsigna-jwks.json",
+          "issuer": "agentsigna",
+          "actionCaseId": "b73effc9-9586-4db0-a559-5ecf994cb992",
+          "machineActorId": "fe60e3d3-384c-4a02-ac19-3a3d158d3ed0",
+          "policyId": "295239ad-b677-4bfc-af5e-a99a0535e316",
+          "actionType": "PURCHASE_ORDER_CREATE",
+          "amount": 4800,
+          "currency": "USD",
+          "counterpartyId": null,
+          "counterpartyName": null,
+          "decision": "ALLOW",
+          "rationale": "Within policy: amount below the approval threshold.",
+          "approvalChain": [],
+          "issuedAt": "2026-10-14T18:26:43.763Z",
+          "expiresAt": "2026-10-15T18:26:43.763Z"
+        },
+        "createdAt": "2026-10-14T18:26:43.763Z"
+      },
+      "nowMs": 1792002463763,
+      "v111Valid": false,
+      "v111Errors": [
+        "Signature verification failed - payload may have been tampered with."
+      ]
+    },
+    {
+      "case": "auto-allow, key A, relative publicKeyRef",
+      "variant": "tampered amount",
+      "keyForm": "pem",
+      "keyKid": "fixture-2026-a",
+      "passport": {
+        "id": "50f78963-6896-4047-a253-b897d89d0632",
+        "actionCaseId": "b73effc9-9586-4db0-a559-5ecf994cb992",
+        "status": "ACTIVE",
+        "issuedAt": "2026-10-14T18:26:43.763Z",
+        "expiresAt": "2026-10-15T18:26:43.763Z",
+        "signature": "ed25519:fixture-2026-a:0X-tFMsr8Sze6JHwdSfhqebf0TJrlBIt3_EMtomN-Mz0BlrdYFN3X0LtRSt3ARdDo83YXfaj9gaG3ysyQMbUAA",
+        "payload": {
+          "spec": "agentsigna-passport",
+          "specVersion": "1.0",
+          "jti": "66badc55-5d37-4b59-9792-0735ced0a714",
+          "actionHash": "272d2a9c94d4ad7bab29e76ff063801439e8b404b2ec752a78c7d7b2433c14a5",
+          "publicKeyRef": "/.well-known/agentsigna-jwks.json",
+          "issuer": "agentsigna",
+          "actionCaseId": "b73effc9-9586-4db0-a559-5ecf994cb992",
+          "machineActorId": "fe60e3d3-384c-4a02-ac19-3a3d158d3ed0",
+          "policyId": "295239ad-b677-4bfc-af5e-a99a0535e316",
+          "actionType": "PURCHASE_ORDER_CREATE",
+          "amount": 1,
+          "currency": "USD",
+          "counterpartyId": null,
+          "counterpartyName": null,
+          "decision": "ALLOW",
+          "rationale": "Within policy: amount below the approval threshold.",
+          "approvalChain": [],
+          "issuedAt": "2026-10-14T18:26:43.763Z",
+          "expiresAt": "2026-10-15T18:26:43.763Z"
+        },
+        "createdAt": "2026-10-14T18:26:43.763Z"
+      },
+      "nowMs": 1792002463763,
+      "v111Valid": false,
+      "v111Errors": [
+        "Signature verification failed - payload may have been tampered with."
+      ]
+    },
+    {
+      "case": "auto-allow, key A, relative publicKeyRef",
+      "variant": "expired",
+      "keyForm": "pem",
+      "keyKid": "fixture-2026-a",
+      "passport": {
+        "id": "50f78963-6896-4047-a253-b897d89d0632",
+        "actionCaseId": "b73effc9-9586-4db0-a559-5ecf994cb992",
+        "status": "ACTIVE",
+        "issuedAt": "2026-10-14T18:26:43.763Z",
+        "expiresAt": "2026-10-15T18:26:43.763Z",
+        "signature": "ed25519:fixture-2026-a:0X-tFMsr8Sze6JHwdSfhqebf0TJrlBIt3_EMtomN-Mz0BlrdYFN3X0LtRSt3ARdDo83YXfaj9gaG3ysyQMbUAA",
+        "payload": {
+          "spec": "agentsigna-passport",
+          "specVersion": "1.0",
+          "jti": "66badc55-5d37-4b59-9792-0735ced0a714",
+          "actionHash": "272d2a9c94d4ad7bab29e76ff063801439e8b404b2ec752a78c7d7b2433c14a5",
+          "publicKeyRef": "/.well-known/agentsigna-jwks.json",
+          "issuer": "agentsigna",
+          "actionCaseId": "b73effc9-9586-4db0-a559-5ecf994cb992",
+          "machineActorId": "fe60e3d3-384c-4a02-ac19-3a3d158d3ed0",
+          "policyId": "295239ad-b677-4bfc-af5e-a99a0535e316",
+          "actionType": "PURCHASE_ORDER_CREATE",
+          "amount": 4800,
+          "currency": "USD",
+          "counterpartyId": null,
+          "counterpartyName": null,
+          "decision": "ALLOW",
+          "rationale": "Within policy: amount below the approval threshold.",
+          "approvalChain": [],
+          "issuedAt": "2026-10-14T18:26:43.763Z",
+          "expiresAt": "2026-10-15T18:26:43.763Z"
+        },
+        "createdAt": "2026-10-14T18:26:43.763Z"
+      },
+      "nowMs": 1792088803764,
+      "v111Valid": false,
+      "v111Errors": [
+        "Passport expired at 2026-10-15T18:26:43.763Z."
+      ]
+    },
+    {
+      "case": "auto-allow, key A, relative publicKeyRef",
+      "variant": "revoked",
+      "keyForm": "pem",
+      "keyKid": "fixture-2026-a",
+      "passport": {
+        "id": "50f78963-6896-4047-a253-b897d89d0632",
+        "actionCaseId": "b73effc9-9586-4db0-a559-5ecf994cb992",
+        "status": "REVOKED",
+        "issuedAt": "2026-10-14T18:26:43.763Z",
+        "expiresAt": "2026-10-15T18:26:43.763Z",
+        "signature": "ed25519:fixture-2026-a:0X-tFMsr8Sze6JHwdSfhqebf0TJrlBIt3_EMtomN-Mz0BlrdYFN3X0LtRSt3ARdDo83YXfaj9gaG3ysyQMbUAA",
+        "payload": {
+          "spec": "agentsigna-passport",
+          "specVersion": "1.0",
+          "jti": "66badc55-5d37-4b59-9792-0735ced0a714",
+          "actionHash": "272d2a9c94d4ad7bab29e76ff063801439e8b404b2ec752a78c7d7b2433c14a5",
+          "publicKeyRef": "/.well-known/agentsigna-jwks.json",
+          "issuer": "agentsigna",
+          "actionCaseId": "b73effc9-9586-4db0-a559-5ecf994cb992",
+          "machineActorId": "fe60e3d3-384c-4a02-ac19-3a3d158d3ed0",
+          "policyId": "295239ad-b677-4bfc-af5e-a99a0535e316",
+          "actionType": "PURCHASE_ORDER_CREATE",
+          "amount": 4800,
+          "currency": "USD",
+          "counterpartyId": null,
+          "counterpartyName": null,
+          "decision": "ALLOW",
+          "rationale": "Within policy: amount below the approval threshold.",
+          "approvalChain": [],
+          "issuedAt": "2026-10-14T18:26:43.763Z",
+          "expiresAt": "2026-10-15T18:26:43.763Z"
+        },
+        "createdAt": "2026-10-14T18:26:43.763Z"
+      },
+      "nowMs": 1792002463763,
+      "v111Valid": false,
+      "v111Errors": [
+        "Passport has been revoked."
+      ]
+    },
+    {
+      "case": "allow-with-conditions, unicode and nested payload, key A",
+      "variant": "as issued",
+      "keyForm": "pem",
+      "keyKid": "fixture-2026-a",
+      "passport": {
+        "id": "da0f18da-5854-4fed-8453-aae1f82a01d6",
+        "actionCaseId": "a8bd609a-80e2-4b8d-a338-bb0c3c9469e0",
+        "status": "ACTIVE",
+        "issuedAt": "2026-10-14T18:26:43.766Z",
+        "expiresAt": "2026-10-15T18:26:43.766Z",
+        "signature": "ed25519:fixture-2026-a:LyVgm8315cDiOocb_C6yJNz2S-FBSYSuk2zd6Ny6erCHHUTH34R6dtIeQYdHrxy5fj3Qh3t6PIDApi41BBPnBQ",
+        "payload": {
+          "spec": "agentsigna-passport",
+          "specVersion": "1.0",
+          "jti": "9da75394-d27d-4a25-838c-3802504ebd9a",
+          "actionHash": "95ad2d42aa23eeb5d86cc14ed163ce2f878bb58b356dd075c47495db8d3ee1f1",
+          "publicKeyRef": "/.well-known/agentsigna-jwks.json",
+          "issuer": "agentsigna",
+          "actionCaseId": "a8bd609a-80e2-4b8d-a338-bb0c3c9469e0",
+          "machineActorId": "9ae96503-de52-4e06-ad41-6f3c8c4b8848",
+          "policyId": "57108050-24c7-4774-abad-d64f582b655a",
+          "actionType": "PURCHASE_ORDER_CREATE",
+          "amount": 1250.5,
+          "currency": "EUR",
+          "counterpartyId": "4a934e77-29a9-4c4e-ae28-6297a591f60e",
+          "counterpartyName": "Société Générale d’Équipement éè 日本 🚀",
+          "decision": "ALLOW_WITH_CONDITIONS",
+          "rationale": "Allowed with conditions: new counterparty.",
+          "approvalChain": [],
+          "issuedAt": "2026-10-14T18:26:43.766Z",
+          "expiresAt": "2026-10-15T18:26:43.766Z"
+        },
+        "createdAt": "2026-10-14T18:26:43.766Z"
+      },
+      "nowMs": 1792002463766,
+      "v111Valid": true,
+      "v111Errors": []
+    },
+    {
+      "case": "allow-with-conditions, unicode and nested payload, key A",
+      "variant": "as issued",
+      "keyForm": "jwk",
+      "keyKid": "fixture-2026-a",
+      "passport": {
+        "id": "da0f18da-5854-4fed-8453-aae1f82a01d6",
+        "actionCaseId": "a8bd609a-80e2-4b8d-a338-bb0c3c9469e0",
+        "status": "ACTIVE",
+        "issuedAt": "2026-10-14T18:26:43.766Z",
+        "expiresAt": "2026-10-15T18:26:43.766Z",
+        "signature": "ed25519:fixture-2026-a:LyVgm8315cDiOocb_C6yJNz2S-FBSYSuk2zd6Ny6erCHHUTH34R6dtIeQYdHrxy5fj3Qh3t6PIDApi41BBPnBQ",
+        "payload": {
+          "spec": "agentsigna-passport",
+          "specVersion": "1.0",
+          "jti": "9da75394-d27d-4a25-838c-3802504ebd9a",
+          "actionHash": "95ad2d42aa23eeb5d86cc14ed163ce2f878bb58b356dd075c47495db8d3ee1f1",
+          "publicKeyRef": "/.well-known/agentsigna-jwks.json",
+          "issuer": "agentsigna",
+          "actionCaseId": "a8bd609a-80e2-4b8d-a338-bb0c3c9469e0",
+          "machineActorId": "9ae96503-de52-4e06-ad41-6f3c8c4b8848",
+          "policyId": "57108050-24c7-4774-abad-d64f582b655a",
+          "actionType": "PURCHASE_ORDER_CREATE",
+          "amount": 1250.5,
+          "currency": "EUR",
+          "counterpartyId": "4a934e77-29a9-4c4e-ae28-6297a591f60e",
+          "counterpartyName": "Société Générale d’Équipement éè 日本 🚀",
+          "decision": "ALLOW_WITH_CONDITIONS",
+          "rationale": "Allowed with conditions: new counterparty.",
+          "approvalChain": [],
+          "issuedAt": "2026-10-14T18:26:43.766Z",
+          "expiresAt": "2026-10-15T18:26:43.766Z"
+        },
+        "createdAt": "2026-10-14T18:26:43.766Z"
+      },
+      "nowMs": 1792002463766,
+      "v111Valid": true,
+      "v111Errors": []
+    },
+    {
+      "case": "allow-with-conditions, unicode and nested payload, key A",
+      "variant": "as issued",
+      "keyForm": "jwk-without-kid",
+      "keyKid": "fixture-2026-a",
+      "passport": {
+        "id": "da0f18da-5854-4fed-8453-aae1f82a01d6",
+        "actionCaseId": "a8bd609a-80e2-4b8d-a338-bb0c3c9469e0",
+        "status": "ACTIVE",
+        "issuedAt": "2026-10-14T18:26:43.766Z",
+        "expiresAt": "2026-10-15T18:26:43.766Z",
+        "signature": "ed25519:fixture-2026-a:LyVgm8315cDiOocb_C6yJNz2S-FBSYSuk2zd6Ny6erCHHUTH34R6dtIeQYdHrxy5fj3Qh3t6PIDApi41BBPnBQ",
+        "payload": {
+          "spec": "agentsigna-passport",
+          "specVersion": "1.0",
+          "jti": "9da75394-d27d-4a25-838c-3802504ebd9a",
+          "actionHash": "95ad2d42aa23eeb5d86cc14ed163ce2f878bb58b356dd075c47495db8d3ee1f1",
+          "publicKeyRef": "/.well-known/agentsigna-jwks.json",
+          "issuer": "agentsigna",
+          "actionCaseId": "a8bd609a-80e2-4b8d-a338-bb0c3c9469e0",
+          "machineActorId": "9ae96503-de52-4e06-ad41-6f3c8c4b8848",
+          "policyId": "57108050-24c7-4774-abad-d64f582b655a",
+          "actionType": "PURCHASE_ORDER_CREATE",
+          "amount": 1250.5,
+          "currency": "EUR",
+          "counterpartyId": "4a934e77-29a9-4c4e-ae28-6297a591f60e",
+          "counterpartyName": "Société Générale d’Équipement éè 日本 🚀",
+          "decision": "ALLOW_WITH_CONDITIONS",
+          "rationale": "Allowed with conditions: new counterparty.",
+          "approvalChain": [],
+          "issuedAt": "2026-10-14T18:26:43.766Z",
+          "expiresAt": "2026-10-15T18:26:43.766Z"
+        },
+        "createdAt": "2026-10-14T18:26:43.766Z"
+      },
+      "nowMs": 1792002463766,
+      "v111Valid": true,
+      "v111Errors": []
+    },
+    {
+      "case": "allow-with-conditions, unicode and nested payload, key A",
+      "variant": "with action payload",
+      "keyForm": "jwk",
+      "keyKid": "fixture-2026-a",
+      "passport": {
+        "id": "da0f18da-5854-4fed-8453-aae1f82a01d6",
+        "actionCaseId": "a8bd609a-80e2-4b8d-a338-bb0c3c9469e0",
+        "status": "ACTIVE",
+        "issuedAt": "2026-10-14T18:26:43.766Z",
+        "expiresAt": "2026-10-15T18:26:43.766Z",
+        "signature": "ed25519:fixture-2026-a:LyVgm8315cDiOocb_C6yJNz2S-FBSYSuk2zd6Ny6erCHHUTH34R6dtIeQYdHrxy5fj3Qh3t6PIDApi41BBPnBQ",
+        "payload": {
+          "spec": "agentsigna-passport",
+          "specVersion": "1.0",
+          "jti": "9da75394-d27d-4a25-838c-3802504ebd9a",
+          "actionHash": "95ad2d42aa23eeb5d86cc14ed163ce2f878bb58b356dd075c47495db8d3ee1f1",
+          "publicKeyRef": "/.well-known/agentsigna-jwks.json",
+          "issuer": "agentsigna",
+          "actionCaseId": "a8bd609a-80e2-4b8d-a338-bb0c3c9469e0",
+          "machineActorId": "9ae96503-de52-4e06-ad41-6f3c8c4b8848",
+          "policyId": "57108050-24c7-4774-abad-d64f582b655a",
+          "actionType": "PURCHASE_ORDER_CREATE",
+          "amount": 1250.5,
+          "currency": "EUR",
+          "counterpartyId": "4a934e77-29a9-4c4e-ae28-6297a591f60e",
+          "counterpartyName": "Société Générale d’Équipement éè 日本 🚀",
+          "decision": "ALLOW_WITH_CONDITIONS",
+          "rationale": "Allowed with conditions: new counterparty.",
+          "approvalChain": [],
+          "issuedAt": "2026-10-14T18:26:43.766Z",
+          "expiresAt": "2026-10-15T18:26:43.766Z"
+        },
+        "createdAt": "2026-10-14T18:26:43.766Z"
+      },
+      "actionPayload": {
+        "b": 1,
+        "a": {
+          "z": null,
+          "y": [
+            3,
+            2,
+            1
+          ],
+          "x": "line\nbreak \"quoted\" \\ back"
+        },
+        "B": true,
+        "～": "fullwidth tilde",
+        "😀": "astral key",
+        "é": "e acute",
+        "n": {
+          "big": 12345678901234568,
+          "small": 0.000001,
+          "neg": -0.5,
+          "exp": 1e+21
+        },
+        "empty": {},
+        "list": []
+      },
+      "nowMs": 1792002463766,
+      "v111Valid": true,
+      "v111Errors": []
+    },
+    {
+      "case": "allow-with-conditions, unicode and nested payload, key A",
+      "variant": "other published key",
+      "keyForm": "pem",
+      "keyKid": "fixture-2026-b",
+      "passport": {
+        "id": "da0f18da-5854-4fed-8453-aae1f82a01d6",
+        "actionCaseId": "a8bd609a-80e2-4b8d-a338-bb0c3c9469e0",
+        "status": "ACTIVE",
+        "issuedAt": "2026-10-14T18:26:43.766Z",
+        "expiresAt": "2026-10-15T18:26:43.766Z",
+        "signature": "ed25519:fixture-2026-a:LyVgm8315cDiOocb_C6yJNz2S-FBSYSuk2zd6Ny6erCHHUTH34R6dtIeQYdHrxy5fj3Qh3t6PIDApi41BBPnBQ",
+        "payload": {
+          "spec": "agentsigna-passport",
+          "specVersion": "1.0",
+          "jti": "9da75394-d27d-4a25-838c-3802504ebd9a",
+          "actionHash": "95ad2d42aa23eeb5d86cc14ed163ce2f878bb58b356dd075c47495db8d3ee1f1",
+          "publicKeyRef": "/.well-known/agentsigna-jwks.json",
+          "issuer": "agentsigna",
+          "actionCaseId": "a8bd609a-80e2-4b8d-a338-bb0c3c9469e0",
+          "machineActorId": "9ae96503-de52-4e06-ad41-6f3c8c4b8848",
+          "policyId": "57108050-24c7-4774-abad-d64f582b655a",
+          "actionType": "PURCHASE_ORDER_CREATE",
+          "amount": 1250.5,
+          "currency": "EUR",
+          "counterpartyId": "4a934e77-29a9-4c4e-ae28-6297a591f60e",
+          "counterpartyName": "Société Générale d’Équipement éè 日本 🚀",
+          "decision": "ALLOW_WITH_CONDITIONS",
+          "rationale": "Allowed with conditions: new counterparty.",
+          "approvalChain": [],
+          "issuedAt": "2026-10-14T18:26:43.766Z",
+          "expiresAt": "2026-10-15T18:26:43.766Z"
+        },
+        "createdAt": "2026-10-14T18:26:43.766Z"
+      },
+      "nowMs": 1792002463766,
+      "v111Valid": false,
+      "v111Errors": [
+        "Signature verification failed - payload may have been tampered with."
+      ]
+    },
+    {
+      "case": "allow-with-conditions, unicode and nested payload, key A",
+      "variant": "unrelated key",
+      "keyForm": "pem",
+      "keyKid": "fixture-unrelated",
+      "passport": {
+        "id": "da0f18da-5854-4fed-8453-aae1f82a01d6",
+        "actionCaseId": "a8bd609a-80e2-4b8d-a338-bb0c3c9469e0",
+        "status": "ACTIVE",
+        "issuedAt": "2026-10-14T18:26:43.766Z",
+        "expiresAt": "2026-10-15T18:26:43.766Z",
+        "signature": "ed25519:fixture-2026-a:LyVgm8315cDiOocb_C6yJNz2S-FBSYSuk2zd6Ny6erCHHUTH34R6dtIeQYdHrxy5fj3Qh3t6PIDApi41BBPnBQ",
+        "payload": {
+          "spec": "agentsigna-passport",
+          "specVersion": "1.0",
+          "jti": "9da75394-d27d-4a25-838c-3802504ebd9a",
+          "actionHash": "95ad2d42aa23eeb5d86cc14ed163ce2f878bb58b356dd075c47495db8d3ee1f1",
+          "publicKeyRef": "/.well-known/agentsigna-jwks.json",
+          "issuer": "agentsigna",
+          "actionCaseId": "a8bd609a-80e2-4b8d-a338-bb0c3c9469e0",
+          "machineActorId": "9ae96503-de52-4e06-ad41-6f3c8c4b8848",
+          "policyId": "57108050-24c7-4774-abad-d64f582b655a",
+          "actionType": "PURCHASE_ORDER_CREATE",
+          "amount": 1250.5,
+          "currency": "EUR",
+          "counterpartyId": "4a934e77-29a9-4c4e-ae28-6297a591f60e",
+          "counterpartyName": "Société Générale d’Équipement éè 日本 🚀",
+          "decision": "ALLOW_WITH_CONDITIONS",
+          "rationale": "Allowed with conditions: new counterparty.",
+          "approvalChain": [],
+          "issuedAt": "2026-10-14T18:26:43.766Z",
+          "expiresAt": "2026-10-15T18:26:43.766Z"
+        },
+        "createdAt": "2026-10-14T18:26:43.766Z"
+      },
+      "nowMs": 1792002463766,
+      "v111Valid": false,
+      "v111Errors": [
+        "Signature verification failed - payload may have been tampered with."
+      ]
+    },
+    {
+      "case": "allow-with-conditions, unicode and nested payload, key A",
+      "variant": "tampered amount",
+      "keyForm": "pem",
+      "keyKid": "fixture-2026-a",
+      "passport": {
+        "id": "da0f18da-5854-4fed-8453-aae1f82a01d6",
+        "actionCaseId": "a8bd609a-80e2-4b8d-a338-bb0c3c9469e0",
+        "status": "ACTIVE",
+        "issuedAt": "2026-10-14T18:26:43.766Z",
+        "expiresAt": "2026-10-15T18:26:43.766Z",
+        "signature": "ed25519:fixture-2026-a:LyVgm8315cDiOocb_C6yJNz2S-FBSYSuk2zd6Ny6erCHHUTH34R6dtIeQYdHrxy5fj3Qh3t6PIDApi41BBPnBQ",
+        "payload": {
+          "spec": "agentsigna-passport",
+          "specVersion": "1.0",
+          "jti": "9da75394-d27d-4a25-838c-3802504ebd9a",
+          "actionHash": "95ad2d42aa23eeb5d86cc14ed163ce2f878bb58b356dd075c47495db8d3ee1f1",
+          "publicKeyRef": "/.well-known/agentsigna-jwks.json",
+          "issuer": "agentsigna",
+          "actionCaseId": "a8bd609a-80e2-4b8d-a338-bb0c3c9469e0",
+          "machineActorId": "9ae96503-de52-4e06-ad41-6f3c8c4b8848",
+          "policyId": "57108050-24c7-4774-abad-d64f582b655a",
+          "actionType": "PURCHASE_ORDER_CREATE",
+          "amount": 1,
+          "currency": "EUR",
+          "counterpartyId": "4a934e77-29a9-4c4e-ae28-6297a591f60e",
+          "counterpartyName": "Société Générale d’Équipement éè 日本 🚀",
+          "decision": "ALLOW_WITH_CONDITIONS",
+          "rationale": "Allowed with conditions: new counterparty.",
+          "approvalChain": [],
+          "issuedAt": "2026-10-14T18:26:43.766Z",
+          "expiresAt": "2026-10-15T18:26:43.766Z"
+        },
+        "createdAt": "2026-10-14T18:26:43.766Z"
+      },
+      "nowMs": 1792002463766,
+      "v111Valid": false,
+      "v111Errors": [
+        "Signature verification failed - payload may have been tampered with."
+      ]
+    },
+    {
+      "case": "allow-with-conditions, unicode and nested payload, key A",
+      "variant": "expired",
+      "keyForm": "pem",
+      "keyKid": "fixture-2026-a",
+      "passport": {
+        "id": "da0f18da-5854-4fed-8453-aae1f82a01d6",
+        "actionCaseId": "a8bd609a-80e2-4b8d-a338-bb0c3c9469e0",
+        "status": "ACTIVE",
+        "issuedAt": "2026-10-14T18:26:43.766Z",
+        "expiresAt": "2026-10-15T18:26:43.766Z",
+        "signature": "ed25519:fixture-2026-a:LyVgm8315cDiOocb_C6yJNz2S-FBSYSuk2zd6Ny6erCHHUTH34R6dtIeQYdHrxy5fj3Qh3t6PIDApi41BBPnBQ",
+        "payload": {
+          "spec": "agentsigna-passport",
+          "specVersion": "1.0",
+          "jti": "9da75394-d27d-4a25-838c-3802504ebd9a",
+          "actionHash": "95ad2d42aa23eeb5d86cc14ed163ce2f878bb58b356dd075c47495db8d3ee1f1",
+          "publicKeyRef": "/.well-known/agentsigna-jwks.json",
+          "issuer": "agentsigna",
+          "actionCaseId": "a8bd609a-80e2-4b8d-a338-bb0c3c9469e0",
+          "machineActorId": "9ae96503-de52-4e06-ad41-6f3c8c4b8848",
+          "policyId": "57108050-24c7-4774-abad-d64f582b655a",
+          "actionType": "PURCHASE_ORDER_CREATE",
+          "amount": 1250.5,
+          "currency": "EUR",
+          "counterpartyId": "4a934e77-29a9-4c4e-ae28-6297a591f60e",
+          "counterpartyName": "Société Générale d’Équipement éè 日本 🚀",
+          "decision": "ALLOW_WITH_CONDITIONS",
+          "rationale": "Allowed with conditions: new counterparty.",
+          "approvalChain": [],
+          "issuedAt": "2026-10-14T18:26:43.766Z",
+          "expiresAt": "2026-10-15T18:26:43.766Z"
+        },
+        "createdAt": "2026-10-14T18:26:43.766Z"
+      },
+      "nowMs": 1792088803767,
+      "v111Valid": false,
+      "v111Errors": [
+        "Passport expired at 2026-10-15T18:26:43.766Z."
+      ]
+    },
+    {
+      "case": "allow-with-conditions, unicode and nested payload, key A",
+      "variant": "revoked",
+      "keyForm": "pem",
+      "keyKid": "fixture-2026-a",
+      "passport": {
+        "id": "da0f18da-5854-4fed-8453-aae1f82a01d6",
+        "actionCaseId": "a8bd609a-80e2-4b8d-a338-bb0c3c9469e0",
+        "status": "REVOKED",
+        "issuedAt": "2026-10-14T18:26:43.766Z",
+        "expiresAt": "2026-10-15T18:26:43.766Z",
+        "signature": "ed25519:fixture-2026-a:LyVgm8315cDiOocb_C6yJNz2S-FBSYSuk2zd6Ny6erCHHUTH34R6dtIeQYdHrxy5fj3Qh3t6PIDApi41BBPnBQ",
+        "payload": {
+          "spec": "agentsigna-passport",
+          "specVersion": "1.0",
+          "jti": "9da75394-d27d-4a25-838c-3802504ebd9a",
+          "actionHash": "95ad2d42aa23eeb5d86cc14ed163ce2f878bb58b356dd075c47495db8d3ee1f1",
+          "publicKeyRef": "/.well-known/agentsigna-jwks.json",
+          "issuer": "agentsigna",
+          "actionCaseId": "a8bd609a-80e2-4b8d-a338-bb0c3c9469e0",
+          "machineActorId": "9ae96503-de52-4e06-ad41-6f3c8c4b8848",
+          "policyId": "57108050-24c7-4774-abad-d64f582b655a",
+          "actionType": "PURCHASE_ORDER_CREATE",
+          "amount": 1250.5,
+          "currency": "EUR",
+          "counterpartyId": "4a934e77-29a9-4c4e-ae28-6297a591f60e",
+          "counterpartyName": "Société Générale d’Équipement éè 日本 🚀",
+          "decision": "ALLOW_WITH_CONDITIONS",
+          "rationale": "Allowed with conditions: new counterparty.",
+          "approvalChain": [],
+          "issuedAt": "2026-10-14T18:26:43.766Z",
+          "expiresAt": "2026-10-15T18:26:43.766Z"
+        },
+        "createdAt": "2026-10-14T18:26:43.766Z"
+      },
+      "nowMs": 1792002463766,
+      "v111Valid": false,
+      "v111Errors": [
+        "Passport has been revoked."
+      ]
+    },
+    {
+      "case": "human approval, comment null, key A",
+      "variant": "as issued",
+      "keyForm": "pem",
+      "keyKid": "fixture-2026-a",
+      "passport": {
+        "id": "bcf1465e-b89f-4465-af3f-f8497437274f",
+        "actionCaseId": "f431cf42-b7fc-4f87-a496-bc229f640bd0",
+        "status": "ACTIVE",
+        "issuedAt": "2026-10-14T18:26:43.767Z",
+        "expiresAt": "2026-10-15T18:26:43.767Z",
+        "signature": "ed25519:fixture-2026-a:F7G4kkmSWz2HNDgkqbhmkOj1XCR6EAesU0Gab2WJc8Ui3OT9ZOcRDAekeh8YN1z5e1zfNnBGxTQP2n9hMh5dAA",
+        "payload": {
+          "spec": "agentsigna-passport",
+          "specVersion": "1.0",
+          "jti": "f407b8c4-ec04-4a71-b9c5-df156d4d6e9b",
+          "actionHash": "c2eb6b4a2d677f7970935e7094d33444d9b4a82b9883d24fd44bc6720fb11976",
+          "publicKeyRef": "/.well-known/agentsigna-jwks.json",
+          "issuer": "agentsigna",
+          "actionCaseId": "f431cf42-b7fc-4f87-a496-bc229f640bd0",
+          "machineActorId": "47f5933d-85ea-4675-adc0-14ee9616740d",
+          "policyId": "31d4f572-519c-4ee6-af59-0760c5b2d38b",
+          "actionType": "WIRE_TRANSFER_INITIATE",
+          "amount": 98000,
+          "currency": "USD",
+          "counterpartyId": null,
+          "counterpartyName": null,
+          "decision": "ALLOW",
+          "rationale": "Approved by human approver.",
+          "approvalChain": [
+            {
+              "approverId": "3b22ee75-11ba-4192-aa2d-7547f66fee71",
+              "decision": "ALLOW",
+              "comment": null,
+              "createdAt": "2026-10-14T18:26:43.767Z"
+            }
+          ],
+          "issuedAt": "2026-10-14T18:26:43.767Z",
+          "expiresAt": "2026-10-15T18:26:43.767Z"
+        },
+        "createdAt": "2026-10-14T18:26:43.767Z"
+      },
+      "nowMs": 1792002463767,
+      "v111Valid": true,
+      "v111Errors": []
+    },
+    {
+      "case": "human approval, comment null, key A",
+      "variant": "as issued",
+      "keyForm": "jwk",
+      "keyKid": "fixture-2026-a",
+      "passport": {
+        "id": "bcf1465e-b89f-4465-af3f-f8497437274f",
+        "actionCaseId": "f431cf42-b7fc-4f87-a496-bc229f640bd0",
+        "status": "ACTIVE",
+        "issuedAt": "2026-10-14T18:26:43.767Z",
+        "expiresAt": "2026-10-15T18:26:43.767Z",
+        "signature": "ed25519:fixture-2026-a:F7G4kkmSWz2HNDgkqbhmkOj1XCR6EAesU0Gab2WJc8Ui3OT9ZOcRDAekeh8YN1z5e1zfNnBGxTQP2n9hMh5dAA",
+        "payload": {
+          "spec": "agentsigna-passport",
+          "specVersion": "1.0",
+          "jti": "f407b8c4-ec04-4a71-b9c5-df156d4d6e9b",
+          "actionHash": "c2eb6b4a2d677f7970935e7094d33444d9b4a82b9883d24fd44bc6720fb11976",
+          "publicKeyRef": "/.well-known/agentsigna-jwks.json",
+          "issuer": "agentsigna",
+          "actionCaseId": "f431cf42-b7fc-4f87-a496-bc229f640bd0",
+          "machineActorId": "47f5933d-85ea-4675-adc0-14ee9616740d",
+          "policyId": "31d4f572-519c-4ee6-af59-0760c5b2d38b",
+          "actionType": "WIRE_TRANSFER_INITIATE",
+          "amount": 98000,
+          "currency": "USD",
+          "counterpartyId": null,
+          "counterpartyName": null,
+          "decision": "ALLOW",
+          "rationale": "Approved by human approver.",
+          "approvalChain": [
+            {
+              "approverId": "3b22ee75-11ba-4192-aa2d-7547f66fee71",
+              "decision": "ALLOW",
+              "comment": null,
+              "createdAt": "2026-10-14T18:26:43.767Z"
+            }
+          ],
+          "issuedAt": "2026-10-14T18:26:43.767Z",
+          "expiresAt": "2026-10-15T18:26:43.767Z"
+        },
+        "createdAt": "2026-10-14T18:26:43.767Z"
+      },
+      "nowMs": 1792002463767,
+      "v111Valid": true,
+      "v111Errors": []
+    },
+    {
+      "case": "human approval, comment null, key A",
+      "variant": "as issued",
+      "keyForm": "jwk-without-kid",
+      "keyKid": "fixture-2026-a",
+      "passport": {
+        "id": "bcf1465e-b89f-4465-af3f-f8497437274f",
+        "actionCaseId": "f431cf42-b7fc-4f87-a496-bc229f640bd0",
+        "status": "ACTIVE",
+        "issuedAt": "2026-10-14T18:26:43.767Z",
+        "expiresAt": "2026-10-15T18:26:43.767Z",
+        "signature": "ed25519:fixture-2026-a:F7G4kkmSWz2HNDgkqbhmkOj1XCR6EAesU0Gab2WJc8Ui3OT9ZOcRDAekeh8YN1z5e1zfNnBGxTQP2n9hMh5dAA",
+        "payload": {
+          "spec": "agentsigna-passport",
+          "specVersion": "1.0",
+          "jti": "f407b8c4-ec04-4a71-b9c5-df156d4d6e9b",
+          "actionHash": "c2eb6b4a2d677f7970935e7094d33444d9b4a82b9883d24fd44bc6720fb11976",
+          "publicKeyRef": "/.well-known/agentsigna-jwks.json",
+          "issuer": "agentsigna",
+          "actionCaseId": "f431cf42-b7fc-4f87-a496-bc229f640bd0",
+          "machineActorId": "47f5933d-85ea-4675-adc0-14ee9616740d",
+          "policyId": "31d4f572-519c-4ee6-af59-0760c5b2d38b",
+          "actionType": "WIRE_TRANSFER_INITIATE",
+          "amount": 98000,
+          "currency": "USD",
+          "counterpartyId": null,
+          "counterpartyName": null,
+          "decision": "ALLOW",
+          "rationale": "Approved by human approver.",
+          "approvalChain": [
+            {
+              "approverId": "3b22ee75-11ba-4192-aa2d-7547f66fee71",
+              "decision": "ALLOW",
+              "comment": null,
+              "createdAt": "2026-10-14T18:26:43.767Z"
+            }
+          ],
+          "issuedAt": "2026-10-14T18:26:43.767Z",
+          "expiresAt": "2026-10-15T18:26:43.767Z"
+        },
+        "createdAt": "2026-10-14T18:26:43.767Z"
+      },
+      "nowMs": 1792002463767,
+      "v111Valid": true,
+      "v111Errors": []
+    },
+    {
+      "case": "human approval, comment null, key A",
+      "variant": "with action payload",
+      "keyForm": "jwk",
+      "keyKid": "fixture-2026-a",
+      "passport": {
+        "id": "bcf1465e-b89f-4465-af3f-f8497437274f",
+        "actionCaseId": "f431cf42-b7fc-4f87-a496-bc229f640bd0",
+        "status": "ACTIVE",
+        "issuedAt": "2026-10-14T18:26:43.767Z",
+        "expiresAt": "2026-10-15T18:26:43.767Z",
+        "signature": "ed25519:fixture-2026-a:F7G4kkmSWz2HNDgkqbhmkOj1XCR6EAesU0Gab2WJc8Ui3OT9ZOcRDAekeh8YN1z5e1zfNnBGxTQP2n9hMh5dAA",
+        "payload": {
+          "spec": "agentsigna-passport",
+          "specVersion": "1.0",
+          "jti": "f407b8c4-ec04-4a71-b9c5-df156d4d6e9b",
+          "actionHash": "c2eb6b4a2d677f7970935e7094d33444d9b4a82b9883d24fd44bc6720fb11976",
+          "publicKeyRef": "/.well-known/agentsigna-jwks.json",
+          "issuer": "agentsigna",
+          "actionCaseId": "f431cf42-b7fc-4f87-a496-bc229f640bd0",
+          "machineActorId": "47f5933d-85ea-4675-adc0-14ee9616740d",
+          "policyId": "31d4f572-519c-4ee6-af59-0760c5b2d38b",
+          "actionType": "WIRE_TRANSFER_INITIATE",
+          "amount": 98000,
+          "currency": "USD",
+          "counterpartyId": null,
+          "counterpartyName": null,
+          "decision": "ALLOW",
+          "rationale": "Approved by human approver.",
+          "approvalChain": [
+            {
+              "approverId": "3b22ee75-11ba-4192-aa2d-7547f66fee71",
+              "decision": "ALLOW",
+              "comment": null,
+              "createdAt": "2026-10-14T18:26:43.767Z"
+            }
+          ],
+          "issuedAt": "2026-10-14T18:26:43.767Z",
+          "expiresAt": "2026-10-15T18:26:43.767Z"
+        },
+        "createdAt": "2026-10-14T18:26:43.767Z"
+      },
+      "actionPayload": {
+        "requestId": "PR-3",
+        "lineItems": [
+          {
+            "sku": "A-1",
+            "qty": 2,
+            "unitPrice": 2400
+          }
+        ]
+      },
+      "nowMs": 1792002463767,
+      "v111Valid": true,
+      "v111Errors": []
+    },
+    {
+      "case": "human approval, comment null, key A",
+      "variant": "other published key",
+      "keyForm": "pem",
+      "keyKid": "fixture-2026-b",
+      "passport": {
+        "id": "bcf1465e-b89f-4465-af3f-f8497437274f",
+        "actionCaseId": "f431cf42-b7fc-4f87-a496-bc229f640bd0",
+        "status": "ACTIVE",
+        "issuedAt": "2026-10-14T18:26:43.767Z",
+        "expiresAt": "2026-10-15T18:26:43.767Z",
+        "signature": "ed25519:fixture-2026-a:F7G4kkmSWz2HNDgkqbhmkOj1XCR6EAesU0Gab2WJc8Ui3OT9ZOcRDAekeh8YN1z5e1zfNnBGxTQP2n9hMh5dAA",
+        "payload": {
+          "spec": "agentsigna-passport",
+          "specVersion": "1.0",
+          "jti": "f407b8c4-ec04-4a71-b9c5-df156d4d6e9b",
+          "actionHash": "c2eb6b4a2d677f7970935e7094d33444d9b4a82b9883d24fd44bc6720fb11976",
+          "publicKeyRef": "/.well-known/agentsigna-jwks.json",
+          "issuer": "agentsigna",
+          "actionCaseId": "f431cf42-b7fc-4f87-a496-bc229f640bd0",
+          "machineActorId": "47f5933d-85ea-4675-adc0-14ee9616740d",
+          "policyId": "31d4f572-519c-4ee6-af59-0760c5b2d38b",
+          "actionType": "WIRE_TRANSFER_INITIATE",
+          "amount": 98000,
+          "currency": "USD",
+          "counterpartyId": null,
+          "counterpartyName": null,
+          "decision": "ALLOW",
+          "rationale": "Approved by human approver.",
+          "approvalChain": [
+            {
+              "approverId": "3b22ee75-11ba-4192-aa2d-7547f66fee71",
+              "decision": "ALLOW",
+              "comment": null,
+              "createdAt": "2026-10-14T18:26:43.767Z"
+            }
+          ],
+          "issuedAt": "2026-10-14T18:26:43.767Z",
+          "expiresAt": "2026-10-15T18:26:43.767Z"
+        },
+        "createdAt": "2026-10-14T18:26:43.767Z"
+      },
+      "nowMs": 1792002463767,
+      "v111Valid": false,
+      "v111Errors": [
+        "Signature verification failed - payload may have been tampered with."
+      ]
+    },
+    {
+      "case": "human approval, comment null, key A",
+      "variant": "unrelated key",
+      "keyForm": "pem",
+      "keyKid": "fixture-unrelated",
+      "passport": {
+        "id": "bcf1465e-b89f-4465-af3f-f8497437274f",
+        "actionCaseId": "f431cf42-b7fc-4f87-a496-bc229f640bd0",
+        "status": "ACTIVE",
+        "issuedAt": "2026-10-14T18:26:43.767Z",
+        "expiresAt": "2026-10-15T18:26:43.767Z",
+        "signature": "ed25519:fixture-2026-a:F7G4kkmSWz2HNDgkqbhmkOj1XCR6EAesU0Gab2WJc8Ui3OT9ZOcRDAekeh8YN1z5e1zfNnBGxTQP2n9hMh5dAA",
+        "payload": {
+          "spec": "agentsigna-passport",
+          "specVersion": "1.0",
+          "jti": "f407b8c4-ec04-4a71-b9c5-df156d4d6e9b",
+          "actionHash": "c2eb6b4a2d677f7970935e7094d33444d9b4a82b9883d24fd44bc6720fb11976",
+          "publicKeyRef": "/.well-known/agentsigna-jwks.json",
+          "issuer": "agentsigna",
+          "actionCaseId": "f431cf42-b7fc-4f87-a496-bc229f640bd0",
+          "machineActorId": "47f5933d-85ea-4675-adc0-14ee9616740d",
+          "policyId": "31d4f572-519c-4ee6-af59-0760c5b2d38b",
+          "actionType": "WIRE_TRANSFER_INITIATE",
+          "amount": 98000,
+          "currency": "USD",
+          "counterpartyId": null,
+          "counterpartyName": null,
+          "decision": "ALLOW",
+          "rationale": "Approved by human approver.",
+          "approvalChain": [
+            {
+              "approverId": "3b22ee75-11ba-4192-aa2d-7547f66fee71",
+              "decision": "ALLOW",
+              "comment": null,
+              "createdAt": "2026-10-14T18:26:43.767Z"
+            }
+          ],
+          "issuedAt": "2026-10-14T18:26:43.767Z",
+          "expiresAt": "2026-10-15T18:26:43.767Z"
+        },
+        "createdAt": "2026-10-14T18:26:43.767Z"
+      },
+      "nowMs": 1792002463767,
+      "v111Valid": false,
+      "v111Errors": [
+        "Signature verification failed - payload may have been tampered with."
+      ]
+    },
+    {
+      "case": "human approval, comment null, key A",
+      "variant": "tampered amount",
+      "keyForm": "pem",
+      "keyKid": "fixture-2026-a",
+      "passport": {
+        "id": "bcf1465e-b89f-4465-af3f-f8497437274f",
+        "actionCaseId": "f431cf42-b7fc-4f87-a496-bc229f640bd0",
+        "status": "ACTIVE",
+        "issuedAt": "2026-10-14T18:26:43.767Z",
+        "expiresAt": "2026-10-15T18:26:43.767Z",
+        "signature": "ed25519:fixture-2026-a:F7G4kkmSWz2HNDgkqbhmkOj1XCR6EAesU0Gab2WJc8Ui3OT9ZOcRDAekeh8YN1z5e1zfNnBGxTQP2n9hMh5dAA",
+        "payload": {
+          "spec": "agentsigna-passport",
+          "specVersion": "1.0",
+          "jti": "f407b8c4-ec04-4a71-b9c5-df156d4d6e9b",
+          "actionHash": "c2eb6b4a2d677f7970935e7094d33444d9b4a82b9883d24fd44bc6720fb11976",
+          "publicKeyRef": "/.well-known/agentsigna-jwks.json",
+          "issuer": "agentsigna",
+          "actionCaseId": "f431cf42-b7fc-4f87-a496-bc229f640bd0",
+          "machineActorId": "47f5933d-85ea-4675-adc0-14ee9616740d",
+          "policyId": "31d4f572-519c-4ee6-af59-0760c5b2d38b",
+          "actionType": "WIRE_TRANSFER_INITIATE",
+          "amount": 1,
+          "currency": "USD",
+          "counterpartyId": null,
+          "counterpartyName": null,
+          "decision": "ALLOW",
+          "rationale": "Approved by human approver.",
+          "approvalChain": [
+            {
+              "approverId": "3b22ee75-11ba-4192-aa2d-7547f66fee71",
+              "decision": "ALLOW",
+              "comment": null,
+              "createdAt": "2026-10-14T18:26:43.767Z"
+            }
+          ],
+          "issuedAt": "2026-10-14T18:26:43.767Z",
+          "expiresAt": "2026-10-15T18:26:43.767Z"
+        },
+        "createdAt": "2026-10-14T18:26:43.767Z"
+      },
+      "nowMs": 1792002463767,
+      "v111Valid": false,
+      "v111Errors": [
+        "Signature verification failed - payload may have been tampered with."
+      ]
+    },
+    {
+      "case": "human approval, comment null, key A",
+      "variant": "expired",
+      "keyForm": "pem",
+      "keyKid": "fixture-2026-a",
+      "passport": {
+        "id": "bcf1465e-b89f-4465-af3f-f8497437274f",
+        "actionCaseId": "f431cf42-b7fc-4f87-a496-bc229f640bd0",
+        "status": "ACTIVE",
+        "issuedAt": "2026-10-14T18:26:43.767Z",
+        "expiresAt": "2026-10-15T18:26:43.767Z",
+        "signature": "ed25519:fixture-2026-a:F7G4kkmSWz2HNDgkqbhmkOj1XCR6EAesU0Gab2WJc8Ui3OT9ZOcRDAekeh8YN1z5e1zfNnBGxTQP2n9hMh5dAA",
+        "payload": {
+          "spec": "agentsigna-passport",
+          "specVersion": "1.0",
+          "jti": "f407b8c4-ec04-4a71-b9c5-df156d4d6e9b",
+          "actionHash": "c2eb6b4a2d677f7970935e7094d33444d9b4a82b9883d24fd44bc6720fb11976",
+          "publicKeyRef": "/.well-known/agentsigna-jwks.json",
+          "issuer": "agentsigna",
+          "actionCaseId": "f431cf42-b7fc-4f87-a496-bc229f640bd0",
+          "machineActorId": "47f5933d-85ea-4675-adc0-14ee9616740d",
+          "policyId": "31d4f572-519c-4ee6-af59-0760c5b2d38b",
+          "actionType": "WIRE_TRANSFER_INITIATE",
+          "amount": 98000,
+          "currency": "USD",
+          "counterpartyId": null,
+          "counterpartyName": null,
+          "decision": "ALLOW",
+          "rationale": "Approved by human approver.",
+          "approvalChain": [
+            {
+              "approverId": "3b22ee75-11ba-4192-aa2d-7547f66fee71",
+              "decision": "ALLOW",
+              "comment": null,
+              "createdAt": "2026-10-14T18:26:43.767Z"
+            }
+          ],
+          "issuedAt": "2026-10-14T18:26:43.767Z",
+          "expiresAt": "2026-10-15T18:26:43.767Z"
+        },
+        "createdAt": "2026-10-14T18:26:43.767Z"
+      },
+      "nowMs": 1792088803768,
+      "v111Valid": false,
+      "v111Errors": [
+        "Passport expired at 2026-10-15T18:26:43.767Z."
+      ]
+    },
+    {
+      "case": "human approval, comment null, key A",
+      "variant": "revoked",
+      "keyForm": "pem",
+      "keyKid": "fixture-2026-a",
+      "passport": {
+        "id": "bcf1465e-b89f-4465-af3f-f8497437274f",
+        "actionCaseId": "f431cf42-b7fc-4f87-a496-bc229f640bd0",
+        "status": "REVOKED",
+        "issuedAt": "2026-10-14T18:26:43.767Z",
+        "expiresAt": "2026-10-15T18:26:43.767Z",
+        "signature": "ed25519:fixture-2026-a:F7G4kkmSWz2HNDgkqbhmkOj1XCR6EAesU0Gab2WJc8Ui3OT9ZOcRDAekeh8YN1z5e1zfNnBGxTQP2n9hMh5dAA",
+        "payload": {
+          "spec": "agentsigna-passport",
+          "specVersion": "1.0",
+          "jti": "f407b8c4-ec04-4a71-b9c5-df156d4d6e9b",
+          "actionHash": "c2eb6b4a2d677f7970935e7094d33444d9b4a82b9883d24fd44bc6720fb11976",
+          "publicKeyRef": "/.well-known/agentsigna-jwks.json",
+          "issuer": "agentsigna",
+          "actionCaseId": "f431cf42-b7fc-4f87-a496-bc229f640bd0",
+          "machineActorId": "47f5933d-85ea-4675-adc0-14ee9616740d",
+          "policyId": "31d4f572-519c-4ee6-af59-0760c5b2d38b",
+          "actionType": "WIRE_TRANSFER_INITIATE",
+          "amount": 98000,
+          "currency": "USD",
+          "counterpartyId": null,
+          "counterpartyName": null,
+          "decision": "ALLOW",
+          "rationale": "Approved by human approver.",
+          "approvalChain": [
+            {
+              "approverId": "3b22ee75-11ba-4192-aa2d-7547f66fee71",
+              "decision": "ALLOW",
+              "comment": null,
+              "createdAt": "2026-10-14T18:26:43.767Z"
+            }
+          ],
+          "issuedAt": "2026-10-14T18:26:43.767Z",
+          "expiresAt": "2026-10-15T18:26:43.767Z"
+        },
+        "createdAt": "2026-10-14T18:26:43.767Z"
+      },
+      "nowMs": 1792002463767,
+      "v111Valid": false,
+      "v111Errors": [
+        "Passport has been revoked."
+      ]
+    },
+    {
+      "case": "no action payload (actionHash null), key A",
+      "variant": "as issued",
+      "keyForm": "pem",
+      "keyKid": "fixture-2026-a",
+      "passport": {
+        "id": "42472485-f0dc-4dcf-9371-ecd57980f84c",
+        "actionCaseId": "7601accf-3a79-4f97-ab76-50223695b169",
+        "status": "ACTIVE",
+        "issuedAt": "2026-10-14T18:26:43.768Z",
+        "expiresAt": "2026-10-15T18:26:43.768Z",
+        "signature": "ed25519:fixture-2026-a:5Pz1rwP7HNjLtblA_i0MG0BnLbfHEB6tmIHwTVBMJ5bcq5qmnpXp8szYUBTtMoZ2wQvoootzSdU1gn4YSUHLAA",
+        "payload": {
+          "spec": "agentsigna-passport",
+          "specVersion": "1.0",
+          "jti": "07194414-ae72-4a0b-bd6d-336f9a4f5c06",
+          "actionHash": null,
+          "publicKeyRef": "/.well-known/agentsigna-jwks.json",
+          "issuer": "agentsigna",
+          "actionCaseId": "7601accf-3a79-4f97-ab76-50223695b169",
+          "machineActorId": "44e2652f-4064-4b43-a527-9913da41088b",
+          "policyId": "407bd551-008d-4ce9-ad7c-a14bbbac874d",
+          "actionType": null,
+          "amount": null,
+          "currency": null,
+          "counterpartyId": null,
+          "counterpartyName": null,
+          "decision": "ALLOW",
+          "rationale": "Within policy.",
+          "approvalChain": [],
+          "issuedAt": "2026-10-14T18:26:43.768Z",
+          "expiresAt": "2026-10-15T18:26:43.768Z"
+        },
+        "createdAt": "2026-10-14T18:26:43.768Z"
+      },
+      "nowMs": 1792002463768,
+      "v111Valid": true,
+      "v111Errors": []
+    },
+    {
+      "case": "no action payload (actionHash null), key A",
+      "variant": "as issued",
+      "keyForm": "jwk",
+      "keyKid": "fixture-2026-a",
+      "passport": {
+        "id": "42472485-f0dc-4dcf-9371-ecd57980f84c",
+        "actionCaseId": "7601accf-3a79-4f97-ab76-50223695b169",
+        "status": "ACTIVE",
+        "issuedAt": "2026-10-14T18:26:43.768Z",
+        "expiresAt": "2026-10-15T18:26:43.768Z",
+        "signature": "ed25519:fixture-2026-a:5Pz1rwP7HNjLtblA_i0MG0BnLbfHEB6tmIHwTVBMJ5bcq5qmnpXp8szYUBTtMoZ2wQvoootzSdU1gn4YSUHLAA",
+        "payload": {
+          "spec": "agentsigna-passport",
+          "specVersion": "1.0",
+          "jti": "07194414-ae72-4a0b-bd6d-336f9a4f5c06",
+          "actionHash": null,
+          "publicKeyRef": "/.well-known/agentsigna-jwks.json",
+          "issuer": "agentsigna",
+          "actionCaseId": "7601accf-3a79-4f97-ab76-50223695b169",
+          "machineActorId": "44e2652f-4064-4b43-a527-9913da41088b",
+          "policyId": "407bd551-008d-4ce9-ad7c-a14bbbac874d",
+          "actionType": null,
+          "amount": null,
+          "currency": null,
+          "counterpartyId": null,
+          "counterpartyName": null,
+          "decision": "ALLOW",
+          "rationale": "Within policy.",
+          "approvalChain": [],
+          "issuedAt": "2026-10-14T18:26:43.768Z",
+          "expiresAt": "2026-10-15T18:26:43.768Z"
+        },
+        "createdAt": "2026-10-14T18:26:43.768Z"
+      },
+      "nowMs": 1792002463768,
+      "v111Valid": true,
+      "v111Errors": []
+    },
+    {
+      "case": "no action payload (actionHash null), key A",
+      "variant": "as issued",
+      "keyForm": "jwk-without-kid",
+      "keyKid": "fixture-2026-a",
+      "passport": {
+        "id": "42472485-f0dc-4dcf-9371-ecd57980f84c",
+        "actionCaseId": "7601accf-3a79-4f97-ab76-50223695b169",
+        "status": "ACTIVE",
+        "issuedAt": "2026-10-14T18:26:43.768Z",
+        "expiresAt": "2026-10-15T18:26:43.768Z",
+        "signature": "ed25519:fixture-2026-a:5Pz1rwP7HNjLtblA_i0MG0BnLbfHEB6tmIHwTVBMJ5bcq5qmnpXp8szYUBTtMoZ2wQvoootzSdU1gn4YSUHLAA",
+        "payload": {
+          "spec": "agentsigna-passport",
+          "specVersion": "1.0",
+          "jti": "07194414-ae72-4a0b-bd6d-336f9a4f5c06",
+          "actionHash": null,
+          "publicKeyRef": "/.well-known/agentsigna-jwks.json",
+          "issuer": "agentsigna",
+          "actionCaseId": "7601accf-3a79-4f97-ab76-50223695b169",
+          "machineActorId": "44e2652f-4064-4b43-a527-9913da41088b",
+          "policyId": "407bd551-008d-4ce9-ad7c-a14bbbac874d",
+          "actionType": null,
+          "amount": null,
+          "currency": null,
+          "counterpartyId": null,
+          "counterpartyName": null,
+          "decision": "ALLOW",
+          "rationale": "Within policy.",
+          "approvalChain": [],
+          "issuedAt": "2026-10-14T18:26:43.768Z",
+          "expiresAt": "2026-10-15T18:26:43.768Z"
+        },
+        "createdAt": "2026-10-14T18:26:43.768Z"
+      },
+      "nowMs": 1792002463768,
+      "v111Valid": true,
+      "v111Errors": []
+    },
+    {
+      "case": "no action payload (actionHash null), key A",
+      "variant": "with action payload",
+      "keyForm": "jwk",
+      "keyKid": "fixture-2026-a",
+      "passport": {
+        "id": "42472485-f0dc-4dcf-9371-ecd57980f84c",
+        "actionCaseId": "7601accf-3a79-4f97-ab76-50223695b169",
+        "status": "ACTIVE",
+        "issuedAt": "2026-10-14T18:26:43.768Z",
+        "expiresAt": "2026-10-15T18:26:43.768Z",
+        "signature": "ed25519:fixture-2026-a:5Pz1rwP7HNjLtblA_i0MG0BnLbfHEB6tmIHwTVBMJ5bcq5qmnpXp8szYUBTtMoZ2wQvoootzSdU1gn4YSUHLAA",
+        "payload": {
+          "spec": "agentsigna-passport",
+          "specVersion": "1.0",
+          "jti": "07194414-ae72-4a0b-bd6d-336f9a4f5c06",
+          "actionHash": null,
+          "publicKeyRef": "/.well-known/agentsigna-jwks.json",
+          "issuer": "agentsigna",
+          "actionCaseId": "7601accf-3a79-4f97-ab76-50223695b169",
+          "machineActorId": "44e2652f-4064-4b43-a527-9913da41088b",
+          "policyId": "407bd551-008d-4ce9-ad7c-a14bbbac874d",
+          "actionType": null,
+          "amount": null,
+          "currency": null,
+          "counterpartyId": null,
+          "counterpartyName": null,
+          "decision": "ALLOW",
+          "rationale": "Within policy.",
+          "approvalChain": [],
+          "issuedAt": "2026-10-14T18:26:43.768Z",
+          "expiresAt": "2026-10-15T18:26:43.768Z"
+        },
+        "createdAt": "2026-10-14T18:26:43.768Z"
+      },
+      "actionPayload": {
+        "unrelated": true
+      },
+      "nowMs": 1792002463768,
+      "v111Valid": false,
+      "v111Errors": [
+        "actionPayload was provided for integrity verification, but the passport has no actionHash. Cannot confirm the passport covers this specific payload."
+      ]
+    },
+    {
+      "case": "no action payload (actionHash null), key A",
+      "variant": "other published key",
+      "keyForm": "pem",
+      "keyKid": "fixture-2026-b",
+      "passport": {
+        "id": "42472485-f0dc-4dcf-9371-ecd57980f84c",
+        "actionCaseId": "7601accf-3a79-4f97-ab76-50223695b169",
+        "status": "ACTIVE",
+        "issuedAt": "2026-10-14T18:26:43.768Z",
+        "expiresAt": "2026-10-15T18:26:43.768Z",
+        "signature": "ed25519:fixture-2026-a:5Pz1rwP7HNjLtblA_i0MG0BnLbfHEB6tmIHwTVBMJ5bcq5qmnpXp8szYUBTtMoZ2wQvoootzSdU1gn4YSUHLAA",
+        "payload": {
+          "spec": "agentsigna-passport",
+          "specVersion": "1.0",
+          "jti": "07194414-ae72-4a0b-bd6d-336f9a4f5c06",
+          "actionHash": null,
+          "publicKeyRef": "/.well-known/agentsigna-jwks.json",
+          "issuer": "agentsigna",
+          "actionCaseId": "7601accf-3a79-4f97-ab76-50223695b169",
+          "machineActorId": "44e2652f-4064-4b43-a527-9913da41088b",
+          "policyId": "407bd551-008d-4ce9-ad7c-a14bbbac874d",
+          "actionType": null,
+          "amount": null,
+          "currency": null,
+          "counterpartyId": null,
+          "counterpartyName": null,
+          "decision": "ALLOW",
+          "rationale": "Within policy.",
+          "approvalChain": [],
+          "issuedAt": "2026-10-14T18:26:43.768Z",
+          "expiresAt": "2026-10-15T18:26:43.768Z"
+        },
+        "createdAt": "2026-10-14T18:26:43.768Z"
+      },
+      "nowMs": 1792002463768,
+      "v111Valid": false,
+      "v111Errors": [
+        "Signature verification failed - payload may have been tampered with."
+      ]
+    },
+    {
+      "case": "no action payload (actionHash null), key A",
+      "variant": "unrelated key",
+      "keyForm": "pem",
+      "keyKid": "fixture-unrelated",
+      "passport": {
+        "id": "42472485-f0dc-4dcf-9371-ecd57980f84c",
+        "actionCaseId": "7601accf-3a79-4f97-ab76-50223695b169",
+        "status": "ACTIVE",
+        "issuedAt": "2026-10-14T18:26:43.768Z",
+        "expiresAt": "2026-10-15T18:26:43.768Z",
+        "signature": "ed25519:fixture-2026-a:5Pz1rwP7HNjLtblA_i0MG0BnLbfHEB6tmIHwTVBMJ5bcq5qmnpXp8szYUBTtMoZ2wQvoootzSdU1gn4YSUHLAA",
+        "payload": {
+          "spec": "agentsigna-passport",
+          "specVersion": "1.0",
+          "jti": "07194414-ae72-4a0b-bd6d-336f9a4f5c06",
+          "actionHash": null,
+          "publicKeyRef": "/.well-known/agentsigna-jwks.json",
+          "issuer": "agentsigna",
+          "actionCaseId": "7601accf-3a79-4f97-ab76-50223695b169",
+          "machineActorId": "44e2652f-4064-4b43-a527-9913da41088b",
+          "policyId": "407bd551-008d-4ce9-ad7c-a14bbbac874d",
+          "actionType": null,
+          "amount": null,
+          "currency": null,
+          "counterpartyId": null,
+          "counterpartyName": null,
+          "decision": "ALLOW",
+          "rationale": "Within policy.",
+          "approvalChain": [],
+          "issuedAt": "2026-10-14T18:26:43.768Z",
+          "expiresAt": "2026-10-15T18:26:43.768Z"
+        },
+        "createdAt": "2026-10-14T18:26:43.768Z"
+      },
+      "nowMs": 1792002463768,
+      "v111Valid": false,
+      "v111Errors": [
+        "Signature verification failed - payload may have been tampered with."
+      ]
+    },
+    {
+      "case": "no action payload (actionHash null), key A",
+      "variant": "tampered amount",
+      "keyForm": "pem",
+      "keyKid": "fixture-2026-a",
+      "passport": {
+        "id": "42472485-f0dc-4dcf-9371-ecd57980f84c",
+        "actionCaseId": "7601accf-3a79-4f97-ab76-50223695b169",
+        "status": "ACTIVE",
+        "issuedAt": "2026-10-14T18:26:43.768Z",
+        "expiresAt": "2026-10-15T18:26:43.768Z",
+        "signature": "ed25519:fixture-2026-a:5Pz1rwP7HNjLtblA_i0MG0BnLbfHEB6tmIHwTVBMJ5bcq5qmnpXp8szYUBTtMoZ2wQvoootzSdU1gn4YSUHLAA",
+        "payload": {
+          "spec": "agentsigna-passport",
+          "specVersion": "1.0",
+          "jti": "07194414-ae72-4a0b-bd6d-336f9a4f5c06",
+          "actionHash": null,
+          "publicKeyRef": "/.well-known/agentsigna-jwks.json",
+          "issuer": "agentsigna",
+          "actionCaseId": "7601accf-3a79-4f97-ab76-50223695b169",
+          "machineActorId": "44e2652f-4064-4b43-a527-9913da41088b",
+          "policyId": "407bd551-008d-4ce9-ad7c-a14bbbac874d",
+          "actionType": null,
+          "amount": 1,
+          "currency": null,
+          "counterpartyId": null,
+          "counterpartyName": null,
+          "decision": "ALLOW",
+          "rationale": "Within policy.",
+          "approvalChain": [],
+          "issuedAt": "2026-10-14T18:26:43.768Z",
+          "expiresAt": "2026-10-15T18:26:43.768Z"
+        },
+        "createdAt": "2026-10-14T18:26:43.768Z"
+      },
+      "nowMs": 1792002463768,
+      "v111Valid": false,
+      "v111Errors": [
+        "Signature verification failed - payload may have been tampered with."
+      ]
+    },
+    {
+      "case": "no action payload (actionHash null), key A",
+      "variant": "expired",
+      "keyForm": "pem",
+      "keyKid": "fixture-2026-a",
+      "passport": {
+        "id": "42472485-f0dc-4dcf-9371-ecd57980f84c",
+        "actionCaseId": "7601accf-3a79-4f97-ab76-50223695b169",
+        "status": "ACTIVE",
+        "issuedAt": "2026-10-14T18:26:43.768Z",
+        "expiresAt": "2026-10-15T18:26:43.768Z",
+        "signature": "ed25519:fixture-2026-a:5Pz1rwP7HNjLtblA_i0MG0BnLbfHEB6tmIHwTVBMJ5bcq5qmnpXp8szYUBTtMoZ2wQvoootzSdU1gn4YSUHLAA",
+        "payload": {
+          "spec": "agentsigna-passport",
+          "specVersion": "1.0",
+          "jti": "07194414-ae72-4a0b-bd6d-336f9a4f5c06",
+          "actionHash": null,
+          "publicKeyRef": "/.well-known/agentsigna-jwks.json",
+          "issuer": "agentsigna",
+          "actionCaseId": "7601accf-3a79-4f97-ab76-50223695b169",
+          "machineActorId": "44e2652f-4064-4b43-a527-9913da41088b",
+          "policyId": "407bd551-008d-4ce9-ad7c-a14bbbac874d",
+          "actionType": null,
+          "amount": null,
+          "currency": null,
+          "counterpartyId": null,
+          "counterpartyName": null,
+          "decision": "ALLOW",
+          "rationale": "Within policy.",
+          "approvalChain": [],
+          "issuedAt": "2026-10-14T18:26:43.768Z",
+          "expiresAt": "2026-10-15T18:26:43.768Z"
+        },
+        "createdAt": "2026-10-14T18:26:43.768Z"
+      },
+      "nowMs": 1792088803769,
+      "v111Valid": false,
+      "v111Errors": [
+        "Passport expired at 2026-10-15T18:26:43.768Z."
+      ]
+    },
+    {
+      "case": "no action payload (actionHash null), key A",
+      "variant": "revoked",
+      "keyForm": "pem",
+      "keyKid": "fixture-2026-a",
+      "passport": {
+        "id": "42472485-f0dc-4dcf-9371-ecd57980f84c",
+        "actionCaseId": "7601accf-3a79-4f97-ab76-50223695b169",
+        "status": "REVOKED",
+        "issuedAt": "2026-10-14T18:26:43.768Z",
+        "expiresAt": "2026-10-15T18:26:43.768Z",
+        "signature": "ed25519:fixture-2026-a:5Pz1rwP7HNjLtblA_i0MG0BnLbfHEB6tmIHwTVBMJ5bcq5qmnpXp8szYUBTtMoZ2wQvoootzSdU1gn4YSUHLAA",
+        "payload": {
+          "spec": "agentsigna-passport",
+          "specVersion": "1.0",
+          "jti": "07194414-ae72-4a0b-bd6d-336f9a4f5c06",
+          "actionHash": null,
+          "publicKeyRef": "/.well-known/agentsigna-jwks.json",
+          "issuer": "agentsigna",
+          "actionCaseId": "7601accf-3a79-4f97-ab76-50223695b169",
+          "machineActorId": "44e2652f-4064-4b43-a527-9913da41088b",
+          "policyId": "407bd551-008d-4ce9-ad7c-a14bbbac874d",
+          "actionType": null,
+          "amount": null,
+          "currency": null,
+          "counterpartyId": null,
+          "counterpartyName": null,
+          "decision": "ALLOW",
+          "rationale": "Within policy.",
+          "approvalChain": [],
+          "issuedAt": "2026-10-14T18:26:43.768Z",
+          "expiresAt": "2026-10-15T18:26:43.768Z"
+        },
+        "createdAt": "2026-10-14T18:26:43.768Z"
+      },
+      "nowMs": 1792002463768,
+      "v111Valid": false,
+      "v111Errors": [
+        "Passport has been revoked."
+      ]
+    },
+    {
+      "case": "auto-allow after rotation, key B, absolute publicKeyRef",
+      "variant": "as issued",
+      "keyForm": "pem",
+      "keyKid": "fixture-2026-b",
+      "passport": {
+        "id": "91b33d07-e524-4bef-94c7-4ab5f3b48948",
+        "actionCaseId": "f274a646-0f9e-4d00-a5e8-dbf22538f665",
+        "status": "ACTIVE",
+        "issuedAt": "2026-10-14T18:26:43.770Z",
+        "expiresAt": "2026-10-15T18:26:43.770Z",
+        "signature": "ed25519:fixture-2026-b:WBt9NKOz8fMy-b3cgXcM-nhmuaGBXm_2ibPRSBfOLT-wZBlXD8UfilKybdnS3XwhKXAaxLcFL9-jupS3kX_pAA",
+        "payload": {
+          "spec": "agentsigna-passport",
+          "specVersion": "1.0",
+          "jti": "5841b0ee-a261-4e63-82b2-6741b735a128",
+          "actionHash": "0d3444ba8d2fda87d56ca8bbe1380c0ae825d5de932f1f11c2a18c79bc635dc9",
+          "publicKeyRef": "https://api.agentsigna.com/.well-known/agentsigna-jwks.json",
+          "issuer": "agentsigna",
+          "actionCaseId": "f274a646-0f9e-4d00-a5e8-dbf22538f665",
+          "machineActorId": "2cc14020-f06d-4016-a2d1-5a44d697461a",
+          "policyId": "2bb8767b-fa19-4616-a8b2-09f7857691d1",
+          "actionType": "PURCHASE_ORDER_CREATE",
+          "amount": 4800,
+          "currency": "USD",
+          "counterpartyId": null,
+          "counterpartyName": null,
+          "decision": "ALLOW",
+          "rationale": "Within policy: amount below the approval threshold.",
+          "approvalChain": [],
+          "issuedAt": "2026-10-14T18:26:43.770Z",
+          "expiresAt": "2026-10-15T18:26:43.770Z"
+        },
+        "createdAt": "2026-10-14T18:26:43.770Z"
+      },
+      "nowMs": 1792002463770,
+      "v111Valid": true,
+      "v111Errors": []
+    },
+    {
+      "case": "auto-allow after rotation, key B, absolute publicKeyRef",
+      "variant": "as issued",
+      "keyForm": "jwk",
+      "keyKid": "fixture-2026-b",
+      "passport": {
+        "id": "91b33d07-e524-4bef-94c7-4ab5f3b48948",
+        "actionCaseId": "f274a646-0f9e-4d00-a5e8-dbf22538f665",
+        "status": "ACTIVE",
+        "issuedAt": "2026-10-14T18:26:43.770Z",
+        "expiresAt": "2026-10-15T18:26:43.770Z",
+        "signature": "ed25519:fixture-2026-b:WBt9NKOz8fMy-b3cgXcM-nhmuaGBXm_2ibPRSBfOLT-wZBlXD8UfilKybdnS3XwhKXAaxLcFL9-jupS3kX_pAA",
+        "payload": {
+          "spec": "agentsigna-passport",
+          "specVersion": "1.0",
+          "jti": "5841b0ee-a261-4e63-82b2-6741b735a128",
+          "actionHash": "0d3444ba8d2fda87d56ca8bbe1380c0ae825d5de932f1f11c2a18c79bc635dc9",
+          "publicKeyRef": "https://api.agentsigna.com/.well-known/agentsigna-jwks.json",
+          "issuer": "agentsigna",
+          "actionCaseId": "f274a646-0f9e-4d00-a5e8-dbf22538f665",
+          "machineActorId": "2cc14020-f06d-4016-a2d1-5a44d697461a",
+          "policyId": "2bb8767b-fa19-4616-a8b2-09f7857691d1",
+          "actionType": "PURCHASE_ORDER_CREATE",
+          "amount": 4800,
+          "currency": "USD",
+          "counterpartyId": null,
+          "counterpartyName": null,
+          "decision": "ALLOW",
+          "rationale": "Within policy: amount below the approval threshold.",
+          "approvalChain": [],
+          "issuedAt": "2026-10-14T18:26:43.770Z",
+          "expiresAt": "2026-10-15T18:26:43.770Z"
+        },
+        "createdAt": "2026-10-14T18:26:43.770Z"
+      },
+      "nowMs": 1792002463770,
+      "v111Valid": true,
+      "v111Errors": []
+    },
+    {
+      "case": "auto-allow after rotation, key B, absolute publicKeyRef",
+      "variant": "as issued",
+      "keyForm": "jwk-without-kid",
+      "keyKid": "fixture-2026-b",
+      "passport": {
+        "id": "91b33d07-e524-4bef-94c7-4ab5f3b48948",
+        "actionCaseId": "f274a646-0f9e-4d00-a5e8-dbf22538f665",
+        "status": "ACTIVE",
+        "issuedAt": "2026-10-14T18:26:43.770Z",
+        "expiresAt": "2026-10-15T18:26:43.770Z",
+        "signature": "ed25519:fixture-2026-b:WBt9NKOz8fMy-b3cgXcM-nhmuaGBXm_2ibPRSBfOLT-wZBlXD8UfilKybdnS3XwhKXAaxLcFL9-jupS3kX_pAA",
+        "payload": {
+          "spec": "agentsigna-passport",
+          "specVersion": "1.0",
+          "jti": "5841b0ee-a261-4e63-82b2-6741b735a128",
+          "actionHash": "0d3444ba8d2fda87d56ca8bbe1380c0ae825d5de932f1f11c2a18c79bc635dc9",
+          "publicKeyRef": "https://api.agentsigna.com/.well-known/agentsigna-jwks.json",
+          "issuer": "agentsigna",
+          "actionCaseId": "f274a646-0f9e-4d00-a5e8-dbf22538f665",
+          "machineActorId": "2cc14020-f06d-4016-a2d1-5a44d697461a",
+          "policyId": "2bb8767b-fa19-4616-a8b2-09f7857691d1",
+          "actionType": "PURCHASE_ORDER_CREATE",
+          "amount": 4800,
+          "currency": "USD",
+          "counterpartyId": null,
+          "counterpartyName": null,
+          "decision": "ALLOW",
+          "rationale": "Within policy: amount below the approval threshold.",
+          "approvalChain": [],
+          "issuedAt": "2026-10-14T18:26:43.770Z",
+          "expiresAt": "2026-10-15T18:26:43.770Z"
+        },
+        "createdAt": "2026-10-14T18:26:43.770Z"
+      },
+      "nowMs": 1792002463770,
+      "v111Valid": true,
+      "v111Errors": []
+    },
+    {
+      "case": "auto-allow after rotation, key B, absolute publicKeyRef",
+      "variant": "with action payload",
+      "keyForm": "jwk",
+      "keyKid": "fixture-2026-b",
+      "passport": {
+        "id": "91b33d07-e524-4bef-94c7-4ab5f3b48948",
+        "actionCaseId": "f274a646-0f9e-4d00-a5e8-dbf22538f665",
+        "status": "ACTIVE",
+        "issuedAt": "2026-10-14T18:26:43.770Z",
+        "expiresAt": "2026-10-15T18:26:43.770Z",
+        "signature": "ed25519:fixture-2026-b:WBt9NKOz8fMy-b3cgXcM-nhmuaGBXm_2ibPRSBfOLT-wZBlXD8UfilKybdnS3XwhKXAaxLcFL9-jupS3kX_pAA",
+        "payload": {
+          "spec": "agentsigna-passport",
+          "specVersion": "1.0",
+          "jti": "5841b0ee-a261-4e63-82b2-6741b735a128",
+          "actionHash": "0d3444ba8d2fda87d56ca8bbe1380c0ae825d5de932f1f11c2a18c79bc635dc9",
+          "publicKeyRef": "https://api.agentsigna.com/.well-known/agentsigna-jwks.json",
+          "issuer": "agentsigna",
+          "actionCaseId": "f274a646-0f9e-4d00-a5e8-dbf22538f665",
+          "machineActorId": "2cc14020-f06d-4016-a2d1-5a44d697461a",
+          "policyId": "2bb8767b-fa19-4616-a8b2-09f7857691d1",
+          "actionType": "PURCHASE_ORDER_CREATE",
+          "amount": 4800,
+          "currency": "USD",
+          "counterpartyId": null,
+          "counterpartyName": null,
+          "decision": "ALLOW",
+          "rationale": "Within policy: amount below the approval threshold.",
+          "approvalChain": [],
+          "issuedAt": "2026-10-14T18:26:43.770Z",
+          "expiresAt": "2026-10-15T18:26:43.770Z"
+        },
+        "createdAt": "2026-10-14T18:26:43.770Z"
+      },
+      "actionPayload": {
+        "requestId": "PR-5",
+        "lineItems": [
+          {
+            "sku": "A-1",
+            "qty": 2,
+            "unitPrice": 2400
+          }
+        ]
+      },
+      "nowMs": 1792002463770,
+      "v111Valid": true,
+      "v111Errors": []
+    },
+    {
+      "case": "auto-allow after rotation, key B, absolute publicKeyRef",
+      "variant": "other published key",
+      "keyForm": "pem",
+      "keyKid": "fixture-2026-a",
+      "passport": {
+        "id": "91b33d07-e524-4bef-94c7-4ab5f3b48948",
+        "actionCaseId": "f274a646-0f9e-4d00-a5e8-dbf22538f665",
+        "status": "ACTIVE",
+        "issuedAt": "2026-10-14T18:26:43.770Z",
+        "expiresAt": "2026-10-15T18:26:43.770Z",
+        "signature": "ed25519:fixture-2026-b:WBt9NKOz8fMy-b3cgXcM-nhmuaGBXm_2ibPRSBfOLT-wZBlXD8UfilKybdnS3XwhKXAaxLcFL9-jupS3kX_pAA",
+        "payload": {
+          "spec": "agentsigna-passport",
+          "specVersion": "1.0",
+          "jti": "5841b0ee-a261-4e63-82b2-6741b735a128",
+          "actionHash": "0d3444ba8d2fda87d56ca8bbe1380c0ae825d5de932f1f11c2a18c79bc635dc9",
+          "publicKeyRef": "https://api.agentsigna.com/.well-known/agentsigna-jwks.json",
+          "issuer": "agentsigna",
+          "actionCaseId": "f274a646-0f9e-4d00-a5e8-dbf22538f665",
+          "machineActorId": "2cc14020-f06d-4016-a2d1-5a44d697461a",
+          "policyId": "2bb8767b-fa19-4616-a8b2-09f7857691d1",
+          "actionType": "PURCHASE_ORDER_CREATE",
+          "amount": 4800,
+          "currency": "USD",
+          "counterpartyId": null,
+          "counterpartyName": null,
+          "decision": "ALLOW",
+          "rationale": "Within policy: amount below the approval threshold.",
+          "approvalChain": [],
+          "issuedAt": "2026-10-14T18:26:43.770Z",
+          "expiresAt": "2026-10-15T18:26:43.770Z"
+        },
+        "createdAt": "2026-10-14T18:26:43.770Z"
+      },
+      "nowMs": 1792002463770,
+      "v111Valid": false,
+      "v111Errors": [
+        "Signature verification failed - payload may have been tampered with."
+      ]
+    },
+    {
+      "case": "auto-allow after rotation, key B, absolute publicKeyRef",
+      "variant": "unrelated key",
+      "keyForm": "pem",
+      "keyKid": "fixture-unrelated",
+      "passport": {
+        "id": "91b33d07-e524-4bef-94c7-4ab5f3b48948",
+        "actionCaseId": "f274a646-0f9e-4d00-a5e8-dbf22538f665",
+        "status": "ACTIVE",
+        "issuedAt": "2026-10-14T18:26:43.770Z",
+        "expiresAt": "2026-10-15T18:26:43.770Z",
+        "signature": "ed25519:fixture-2026-b:WBt9NKOz8fMy-b3cgXcM-nhmuaGBXm_2ibPRSBfOLT-wZBlXD8UfilKybdnS3XwhKXAaxLcFL9-jupS3kX_pAA",
+        "payload": {
+          "spec": "agentsigna-passport",
+          "specVersion": "1.0",
+          "jti": "5841b0ee-a261-4e63-82b2-6741b735a128",
+          "actionHash": "0d3444ba8d2fda87d56ca8bbe1380c0ae825d5de932f1f11c2a18c79bc635dc9",
+          "publicKeyRef": "https://api.agentsigna.com/.well-known/agentsigna-jwks.json",
+          "issuer": "agentsigna",
+          "actionCaseId": "f274a646-0f9e-4d00-a5e8-dbf22538f665",
+          "machineActorId": "2cc14020-f06d-4016-a2d1-5a44d697461a",
+          "policyId": "2bb8767b-fa19-4616-a8b2-09f7857691d1",
+          "actionType": "PURCHASE_ORDER_CREATE",
+          "amount": 4800,
+          "currency": "USD",
+          "counterpartyId": null,
+          "counterpartyName": null,
+          "decision": "ALLOW",
+          "rationale": "Within policy: amount below the approval threshold.",
+          "approvalChain": [],
+          "issuedAt": "2026-10-14T18:26:43.770Z",
+          "expiresAt": "2026-10-15T18:26:43.770Z"
+        },
+        "createdAt": "2026-10-14T18:26:43.770Z"
+      },
+      "nowMs": 1792002463770,
+      "v111Valid": false,
+      "v111Errors": [
+        "Signature verification failed - payload may have been tampered with."
+      ]
+    },
+    {
+      "case": "auto-allow after rotation, key B, absolute publicKeyRef",
+      "variant": "tampered amount",
+      "keyForm": "pem",
+      "keyKid": "fixture-2026-b",
+      "passport": {
+        "id": "91b33d07-e524-4bef-94c7-4ab5f3b48948",
+        "actionCaseId": "f274a646-0f9e-4d00-a5e8-dbf22538f665",
+        "status": "ACTIVE",
+        "issuedAt": "2026-10-14T18:26:43.770Z",
+        "expiresAt": "2026-10-15T18:26:43.770Z",
+        "signature": "ed25519:fixture-2026-b:WBt9NKOz8fMy-b3cgXcM-nhmuaGBXm_2ibPRSBfOLT-wZBlXD8UfilKybdnS3XwhKXAaxLcFL9-jupS3kX_pAA",
+        "payload": {
+          "spec": "agentsigna-passport",
+          "specVersion": "1.0",
+          "jti": "5841b0ee-a261-4e63-82b2-6741b735a128",
+          "actionHash": "0d3444ba8d2fda87d56ca8bbe1380c0ae825d5de932f1f11c2a18c79bc635dc9",
+          "publicKeyRef": "https://api.agentsigna.com/.well-known/agentsigna-jwks.json",
+          "issuer": "agentsigna",
+          "actionCaseId": "f274a646-0f9e-4d00-a5e8-dbf22538f665",
+          "machineActorId": "2cc14020-f06d-4016-a2d1-5a44d697461a",
+          "policyId": "2bb8767b-fa19-4616-a8b2-09f7857691d1",
+          "actionType": "PURCHASE_ORDER_CREATE",
+          "amount": 1,
+          "currency": "USD",
+          "counterpartyId": null,
+          "counterpartyName": null,
+          "decision": "ALLOW",
+          "rationale": "Within policy: amount below the approval threshold.",
+          "approvalChain": [],
+          "issuedAt": "2026-10-14T18:26:43.770Z",
+          "expiresAt": "2026-10-15T18:26:43.770Z"
+        },
+        "createdAt": "2026-10-14T18:26:43.770Z"
+      },
+      "nowMs": 1792002463770,
+      "v111Valid": false,
+      "v111Errors": [
+        "Signature verification failed - payload may have been tampered with."
+      ]
+    },
+    {
+      "case": "auto-allow after rotation, key B, absolute publicKeyRef",
+      "variant": "expired",
+      "keyForm": "pem",
+      "keyKid": "fixture-2026-b",
+      "passport": {
+        "id": "91b33d07-e524-4bef-94c7-4ab5f3b48948",
+        "actionCaseId": "f274a646-0f9e-4d00-a5e8-dbf22538f665",
+        "status": "ACTIVE",
+        "issuedAt": "2026-10-14T18:26:43.770Z",
+        "expiresAt": "2026-10-15T18:26:43.770Z",
+        "signature": "ed25519:fixture-2026-b:WBt9NKOz8fMy-b3cgXcM-nhmuaGBXm_2ibPRSBfOLT-wZBlXD8UfilKybdnS3XwhKXAaxLcFL9-jupS3kX_pAA",
+        "payload": {
+          "spec": "agentsigna-passport",
+          "specVersion": "1.0",
+          "jti": "5841b0ee-a261-4e63-82b2-6741b735a128",
+          "actionHash": "0d3444ba8d2fda87d56ca8bbe1380c0ae825d5de932f1f11c2a18c79bc635dc9",
+          "publicKeyRef": "https://api.agentsigna.com/.well-known/agentsigna-jwks.json",
+          "issuer": "agentsigna",
+          "actionCaseId": "f274a646-0f9e-4d00-a5e8-dbf22538f665",
+          "machineActorId": "2cc14020-f06d-4016-a2d1-5a44d697461a",
+          "policyId": "2bb8767b-fa19-4616-a8b2-09f7857691d1",
+          "actionType": "PURCHASE_ORDER_CREATE",
+          "amount": 4800,
+          "currency": "USD",
+          "counterpartyId": null,
+          "counterpartyName": null,
+          "decision": "ALLOW",
+          "rationale": "Within policy: amount below the approval threshold.",
+          "approvalChain": [],
+          "issuedAt": "2026-10-14T18:26:43.770Z",
+          "expiresAt": "2026-10-15T18:26:43.770Z"
+        },
+        "createdAt": "2026-10-14T18:26:43.770Z"
+      },
+      "nowMs": 1792088803771,
+      "v111Valid": false,
+      "v111Errors": [
+        "Passport expired at 2026-10-15T18:26:43.770Z."
+      ]
+    },
+    {
+      "case": "auto-allow after rotation, key B, absolute publicKeyRef",
+      "variant": "revoked",
+      "keyForm": "pem",
+      "keyKid": "fixture-2026-b",
+      "passport": {
+        "id": "91b33d07-e524-4bef-94c7-4ab5f3b48948",
+        "actionCaseId": "f274a646-0f9e-4d00-a5e8-dbf22538f665",
+        "status": "REVOKED",
+        "issuedAt": "2026-10-14T18:26:43.770Z",
+        "expiresAt": "2026-10-15T18:26:43.770Z",
+        "signature": "ed25519:fixture-2026-b:WBt9NKOz8fMy-b3cgXcM-nhmuaGBXm_2ibPRSBfOLT-wZBlXD8UfilKybdnS3XwhKXAaxLcFL9-jupS3kX_pAA",
+        "payload": {
+          "spec": "agentsigna-passport",
+          "specVersion": "1.0",
+          "jti": "5841b0ee-a261-4e63-82b2-6741b735a128",
+          "actionHash": "0d3444ba8d2fda87d56ca8bbe1380c0ae825d5de932f1f11c2a18c79bc635dc9",
+          "publicKeyRef": "https://api.agentsigna.com/.well-known/agentsigna-jwks.json",
+          "issuer": "agentsigna",
+          "actionCaseId": "f274a646-0f9e-4d00-a5e8-dbf22538f665",
+          "machineActorId": "2cc14020-f06d-4016-a2d1-5a44d697461a",
+          "policyId": "2bb8767b-fa19-4616-a8b2-09f7857691d1",
+          "actionType": "PURCHASE_ORDER_CREATE",
+          "amount": 4800,
+          "currency": "USD",
+          "counterpartyId": null,
+          "counterpartyName": null,
+          "decision": "ALLOW",
+          "rationale": "Within policy: amount below the approval threshold.",
+          "approvalChain": [],
+          "issuedAt": "2026-10-14T18:26:43.770Z",
+          "expiresAt": "2026-10-15T18:26:43.770Z"
+        },
+        "createdAt": "2026-10-14T18:26:43.770Z"
+      },
+      "nowMs": 1792002463770,
+      "v111Valid": false,
+      "v111Errors": [
+        "Passport has been revoked."
+      ]
+    },
+    {
+      "case": "human approval with comment after rotation, key B",
+      "variant": "as issued",
+      "keyForm": "pem",
+      "keyKid": "fixture-2026-b",
+      "passport": {
+        "id": "e65b2391-4972-4e03-b5c2-453ffebc3568",
+        "actionCaseId": "7bbbeeb6-7bc6-4674-ab1b-8b103ff6c516",
+        "status": "ACTIVE",
+        "issuedAt": "2026-10-14T18:26:43.772Z",
+        "expiresAt": "2026-10-15T18:26:43.772Z",
+        "signature": "ed25519:fixture-2026-b:sdBm2JtBSNIvR_X6wBolMrijYRVLZKbIVHJpR988eaVyz1bfqJJuYCwrhR0dJwsNQxmwgRVDT4TId3qJ8DoeDg",
+        "payload": {
+          "spec": "agentsigna-passport",
+          "specVersion": "1.0",
+          "jti": "bdf689b5-3254-4d01-803c-e0ddc283165e",
+          "actionHash": "9df07893508d7da1feb8811167d4470164fdc96ac0ee467a60beb12e63973eca",
+          "publicKeyRef": "https://api.agentsigna.com/.well-known/agentsigna-jwks.json",
+          "issuer": "agentsigna",
+          "actionCaseId": "7bbbeeb6-7bc6-4674-ab1b-8b103ff6c516",
+          "machineActorId": "d5cbf963-1ce9-4c79-a868-0fb3606c0a20",
+          "policyId": "1c0c7e28-1041-4e9c-aee0-a398d8be1cd9",
+          "actionType": "PURCHASE_ORDER_CREATE",
+          "amount": 15000,
+          "currency": "USD",
+          "counterpartyId": null,
+          "counterpartyName": null,
+          "decision": "ALLOW",
+          "rationale": "Approved by human approver.",
+          "approvalChain": [
+            {
+              "approverId": "868838e5-43cf-4ae0-a38d-8d62ff0df6bb",
+              "decision": "ALLOW",
+              "comment": "Checked against contract 2026-114.",
+              "createdAt": "2026-10-14T18:26:43.772Z"
+            }
+          ],
+          "issuedAt": "2026-10-14T18:26:43.772Z",
+          "expiresAt": "2026-10-15T18:26:43.772Z"
+        },
+        "createdAt": "2026-10-14T18:26:43.772Z"
+      },
+      "nowMs": 1792002463772,
+      "v111Valid": true,
+      "v111Errors": []
+    },
+    {
+      "case": "human approval with comment after rotation, key B",
+      "variant": "as issued",
+      "keyForm": "jwk",
+      "keyKid": "fixture-2026-b",
+      "passport": {
+        "id": "e65b2391-4972-4e03-b5c2-453ffebc3568",
+        "actionCaseId": "7bbbeeb6-7bc6-4674-ab1b-8b103ff6c516",
+        "status": "ACTIVE",
+        "issuedAt": "2026-10-14T18:26:43.772Z",
+        "expiresAt": "2026-10-15T18:26:43.772Z",
+        "signature": "ed25519:fixture-2026-b:sdBm2JtBSNIvR_X6wBolMrijYRVLZKbIVHJpR988eaVyz1bfqJJuYCwrhR0dJwsNQxmwgRVDT4TId3qJ8DoeDg",
+        "payload": {
+          "spec": "agentsigna-passport",
+          "specVersion": "1.0",
+          "jti": "bdf689b5-3254-4d01-803c-e0ddc283165e",
+          "actionHash": "9df07893508d7da1feb8811167d4470164fdc96ac0ee467a60beb12e63973eca",
+          "publicKeyRef": "https://api.agentsigna.com/.well-known/agentsigna-jwks.json",
+          "issuer": "agentsigna",
+          "actionCaseId": "7bbbeeb6-7bc6-4674-ab1b-8b103ff6c516",
+          "machineActorId": "d5cbf963-1ce9-4c79-a868-0fb3606c0a20",
+          "policyId": "1c0c7e28-1041-4e9c-aee0-a398d8be1cd9",
+          "actionType": "PURCHASE_ORDER_CREATE",
+          "amount": 15000,
+          "currency": "USD",
+          "counterpartyId": null,
+          "counterpartyName": null,
+          "decision": "ALLOW",
+          "rationale": "Approved by human approver.",
+          "approvalChain": [
+            {
+              "approverId": "868838e5-43cf-4ae0-a38d-8d62ff0df6bb",
+              "decision": "ALLOW",
+              "comment": "Checked against contract 2026-114.",
+              "createdAt": "2026-10-14T18:26:43.772Z"
+            }
+          ],
+          "issuedAt": "2026-10-14T18:26:43.772Z",
+          "expiresAt": "2026-10-15T18:26:43.772Z"
+        },
+        "createdAt": "2026-10-14T18:26:43.772Z"
+      },
+      "nowMs": 1792002463772,
+      "v111Valid": true,
+      "v111Errors": []
+    },
+    {
+      "case": "human approval with comment after rotation, key B",
+      "variant": "as issued",
+      "keyForm": "jwk-without-kid",
+      "keyKid": "fixture-2026-b",
+      "passport": {
+        "id": "e65b2391-4972-4e03-b5c2-453ffebc3568",
+        "actionCaseId": "7bbbeeb6-7bc6-4674-ab1b-8b103ff6c516",
+        "status": "ACTIVE",
+        "issuedAt": "2026-10-14T18:26:43.772Z",
+        "expiresAt": "2026-10-15T18:26:43.772Z",
+        "signature": "ed25519:fixture-2026-b:sdBm2JtBSNIvR_X6wBolMrijYRVLZKbIVHJpR988eaVyz1bfqJJuYCwrhR0dJwsNQxmwgRVDT4TId3qJ8DoeDg",
+        "payload": {
+          "spec": "agentsigna-passport",
+          "specVersion": "1.0",
+          "jti": "bdf689b5-3254-4d01-803c-e0ddc283165e",
+          "actionHash": "9df07893508d7da1feb8811167d4470164fdc96ac0ee467a60beb12e63973eca",
+          "publicKeyRef": "https://api.agentsigna.com/.well-known/agentsigna-jwks.json",
+          "issuer": "agentsigna",
+          "actionCaseId": "7bbbeeb6-7bc6-4674-ab1b-8b103ff6c516",
+          "machineActorId": "d5cbf963-1ce9-4c79-a868-0fb3606c0a20",
+          "policyId": "1c0c7e28-1041-4e9c-aee0-a398d8be1cd9",
+          "actionType": "PURCHASE_ORDER_CREATE",
+          "amount": 15000,
+          "currency": "USD",
+          "counterpartyId": null,
+          "counterpartyName": null,
+          "decision": "ALLOW",
+          "rationale": "Approved by human approver.",
+          "approvalChain": [
+            {
+              "approverId": "868838e5-43cf-4ae0-a38d-8d62ff0df6bb",
+              "decision": "ALLOW",
+              "comment": "Checked against contract 2026-114.",
+              "createdAt": "2026-10-14T18:26:43.772Z"
+            }
+          ],
+          "issuedAt": "2026-10-14T18:26:43.772Z",
+          "expiresAt": "2026-10-15T18:26:43.772Z"
+        },
+        "createdAt": "2026-10-14T18:26:43.772Z"
+      },
+      "nowMs": 1792002463772,
+      "v111Valid": true,
+      "v111Errors": []
+    },
+    {
+      "case": "human approval with comment after rotation, key B",
+      "variant": "with action payload",
+      "keyForm": "jwk",
+      "keyKid": "fixture-2026-b",
+      "passport": {
+        "id": "e65b2391-4972-4e03-b5c2-453ffebc3568",
+        "actionCaseId": "7bbbeeb6-7bc6-4674-ab1b-8b103ff6c516",
+        "status": "ACTIVE",
+        "issuedAt": "2026-10-14T18:26:43.772Z",
+        "expiresAt": "2026-10-15T18:26:43.772Z",
+        "signature": "ed25519:fixture-2026-b:sdBm2JtBSNIvR_X6wBolMrijYRVLZKbIVHJpR988eaVyz1bfqJJuYCwrhR0dJwsNQxmwgRVDT4TId3qJ8DoeDg",
+        "payload": {
+          "spec": "agentsigna-passport",
+          "specVersion": "1.0",
+          "jti": "bdf689b5-3254-4d01-803c-e0ddc283165e",
+          "actionHash": "9df07893508d7da1feb8811167d4470164fdc96ac0ee467a60beb12e63973eca",
+          "publicKeyRef": "https://api.agentsigna.com/.well-known/agentsigna-jwks.json",
+          "issuer": "agentsigna",
+          "actionCaseId": "7bbbeeb6-7bc6-4674-ab1b-8b103ff6c516",
+          "machineActorId": "d5cbf963-1ce9-4c79-a868-0fb3606c0a20",
+          "policyId": "1c0c7e28-1041-4e9c-aee0-a398d8be1cd9",
+          "actionType": "PURCHASE_ORDER_CREATE",
+          "amount": 15000,
+          "currency": "USD",
+          "counterpartyId": null,
+          "counterpartyName": null,
+          "decision": "ALLOW",
+          "rationale": "Approved by human approver.",
+          "approvalChain": [
+            {
+              "approverId": "868838e5-43cf-4ae0-a38d-8d62ff0df6bb",
+              "decision": "ALLOW",
+              "comment": "Checked against contract 2026-114.",
+              "createdAt": "2026-10-14T18:26:43.772Z"
+            }
+          ],
+          "issuedAt": "2026-10-14T18:26:43.772Z",
+          "expiresAt": "2026-10-15T18:26:43.772Z"
+        },
+        "createdAt": "2026-10-14T18:26:43.772Z"
+      },
+      "actionPayload": {
+        "requestId": "PR-6",
+        "lineItems": [
+          {
+            "sku": "A-1",
+            "qty": 2,
+            "unitPrice": 2400
+          }
+        ]
+      },
+      "nowMs": 1792002463772,
+      "v111Valid": true,
+      "v111Errors": []
+    },
+    {
+      "case": "human approval with comment after rotation, key B",
+      "variant": "other published key",
+      "keyForm": "pem",
+      "keyKid": "fixture-2026-a",
+      "passport": {
+        "id": "e65b2391-4972-4e03-b5c2-453ffebc3568",
+        "actionCaseId": "7bbbeeb6-7bc6-4674-ab1b-8b103ff6c516",
+        "status": "ACTIVE",
+        "issuedAt": "2026-10-14T18:26:43.772Z",
+        "expiresAt": "2026-10-15T18:26:43.772Z",
+        "signature": "ed25519:fixture-2026-b:sdBm2JtBSNIvR_X6wBolMrijYRVLZKbIVHJpR988eaVyz1bfqJJuYCwrhR0dJwsNQxmwgRVDT4TId3qJ8DoeDg",
+        "payload": {
+          "spec": "agentsigna-passport",
+          "specVersion": "1.0",
+          "jti": "bdf689b5-3254-4d01-803c-e0ddc283165e",
+          "actionHash": "9df07893508d7da1feb8811167d4470164fdc96ac0ee467a60beb12e63973eca",
+          "publicKeyRef": "https://api.agentsigna.com/.well-known/agentsigna-jwks.json",
+          "issuer": "agentsigna",
+          "actionCaseId": "7bbbeeb6-7bc6-4674-ab1b-8b103ff6c516",
+          "machineActorId": "d5cbf963-1ce9-4c79-a868-0fb3606c0a20",
+          "policyId": "1c0c7e28-1041-4e9c-aee0-a398d8be1cd9",
+          "actionType": "PURCHASE_ORDER_CREATE",
+          "amount": 15000,
+          "currency": "USD",
+          "counterpartyId": null,
+          "counterpartyName": null,
+          "decision": "ALLOW",
+          "rationale": "Approved by human approver.",
+          "approvalChain": [
+            {
+              "approverId": "868838e5-43cf-4ae0-a38d-8d62ff0df6bb",
+              "decision": "ALLOW",
+              "comment": "Checked against contract 2026-114.",
+              "createdAt": "2026-10-14T18:26:43.772Z"
+            }
+          ],
+          "issuedAt": "2026-10-14T18:26:43.772Z",
+          "expiresAt": "2026-10-15T18:26:43.772Z"
+        },
+        "createdAt": "2026-10-14T18:26:43.772Z"
+      },
+      "nowMs": 1792002463772,
+      "v111Valid": false,
+      "v111Errors": [
+        "Signature verification failed - payload may have been tampered with."
+      ]
+    },
+    {
+      "case": "human approval with comment after rotation, key B",
+      "variant": "unrelated key",
+      "keyForm": "pem",
+      "keyKid": "fixture-unrelated",
+      "passport": {
+        "id": "e65b2391-4972-4e03-b5c2-453ffebc3568",
+        "actionCaseId": "7bbbeeb6-7bc6-4674-ab1b-8b103ff6c516",
+        "status": "ACTIVE",
+        "issuedAt": "2026-10-14T18:26:43.772Z",
+        "expiresAt": "2026-10-15T18:26:43.772Z",
+        "signature": "ed25519:fixture-2026-b:sdBm2JtBSNIvR_X6wBolMrijYRVLZKbIVHJpR988eaVyz1bfqJJuYCwrhR0dJwsNQxmwgRVDT4TId3qJ8DoeDg",
+        "payload": {
+          "spec": "agentsigna-passport",
+          "specVersion": "1.0",
+          "jti": "bdf689b5-3254-4d01-803c-e0ddc283165e",
+          "actionHash": "9df07893508d7da1feb8811167d4470164fdc96ac0ee467a60beb12e63973eca",
+          "publicKeyRef": "https://api.agentsigna.com/.well-known/agentsigna-jwks.json",
+          "issuer": "agentsigna",
+          "actionCaseId": "7bbbeeb6-7bc6-4674-ab1b-8b103ff6c516",
+          "machineActorId": "d5cbf963-1ce9-4c79-a868-0fb3606c0a20",
+          "policyId": "1c0c7e28-1041-4e9c-aee0-a398d8be1cd9",
+          "actionType": "PURCHASE_ORDER_CREATE",
+          "amount": 15000,
+          "currency": "USD",
+          "counterpartyId": null,
+          "counterpartyName": null,
+          "decision": "ALLOW",
+          "rationale": "Approved by human approver.",
+          "approvalChain": [
+            {
+              "approverId": "868838e5-43cf-4ae0-a38d-8d62ff0df6bb",
+              "decision": "ALLOW",
+              "comment": "Checked against contract 2026-114.",
+              "createdAt": "2026-10-14T18:26:43.772Z"
+            }
+          ],
+          "issuedAt": "2026-10-14T18:26:43.772Z",
+          "expiresAt": "2026-10-15T18:26:43.772Z"
+        },
+        "createdAt": "2026-10-14T18:26:43.772Z"
+      },
+      "nowMs": 1792002463772,
+      "v111Valid": false,
+      "v111Errors": [
+        "Signature verification failed - payload may have been tampered with."
+      ]
+    },
+    {
+      "case": "human approval with comment after rotation, key B",
+      "variant": "tampered amount",
+      "keyForm": "pem",
+      "keyKid": "fixture-2026-b",
+      "passport": {
+        "id": "e65b2391-4972-4e03-b5c2-453ffebc3568",
+        "actionCaseId": "7bbbeeb6-7bc6-4674-ab1b-8b103ff6c516",
+        "status": "ACTIVE",
+        "issuedAt": "2026-10-14T18:26:43.772Z",
+        "expiresAt": "2026-10-15T18:26:43.772Z",
+        "signature": "ed25519:fixture-2026-b:sdBm2JtBSNIvR_X6wBolMrijYRVLZKbIVHJpR988eaVyz1bfqJJuYCwrhR0dJwsNQxmwgRVDT4TId3qJ8DoeDg",
+        "payload": {
+          "spec": "agentsigna-passport",
+          "specVersion": "1.0",
+          "jti": "bdf689b5-3254-4d01-803c-e0ddc283165e",
+          "actionHash": "9df07893508d7da1feb8811167d4470164fdc96ac0ee467a60beb12e63973eca",
+          "publicKeyRef": "https://api.agentsigna.com/.well-known/agentsigna-jwks.json",
+          "issuer": "agentsigna",
+          "actionCaseId": "7bbbeeb6-7bc6-4674-ab1b-8b103ff6c516",
+          "machineActorId": "d5cbf963-1ce9-4c79-a868-0fb3606c0a20",
+          "policyId": "1c0c7e28-1041-4e9c-aee0-a398d8be1cd9",
+          "actionType": "PURCHASE_ORDER_CREATE",
+          "amount": 1,
+          "currency": "USD",
+          "counterpartyId": null,
+          "counterpartyName": null,
+          "decision": "ALLOW",
+          "rationale": "Approved by human approver.",
+          "approvalChain": [
+            {
+              "approverId": "868838e5-43cf-4ae0-a38d-8d62ff0df6bb",
+              "decision": "ALLOW",
+              "comment": "Checked against contract 2026-114.",
+              "createdAt": "2026-10-14T18:26:43.772Z"
+            }
+          ],
+          "issuedAt": "2026-10-14T18:26:43.772Z",
+          "expiresAt": "2026-10-15T18:26:43.772Z"
+        },
+        "createdAt": "2026-10-14T18:26:43.772Z"
+      },
+      "nowMs": 1792002463772,
+      "v111Valid": false,
+      "v111Errors": [
+        "Signature verification failed - payload may have been tampered with."
+      ]
+    },
+    {
+      "case": "human approval with comment after rotation, key B",
+      "variant": "expired",
+      "keyForm": "pem",
+      "keyKid": "fixture-2026-b",
+      "passport": {
+        "id": "e65b2391-4972-4e03-b5c2-453ffebc3568",
+        "actionCaseId": "7bbbeeb6-7bc6-4674-ab1b-8b103ff6c516",
+        "status": "ACTIVE",
+        "issuedAt": "2026-10-14T18:26:43.772Z",
+        "expiresAt": "2026-10-15T18:26:43.772Z",
+        "signature": "ed25519:fixture-2026-b:sdBm2JtBSNIvR_X6wBolMrijYRVLZKbIVHJpR988eaVyz1bfqJJuYCwrhR0dJwsNQxmwgRVDT4TId3qJ8DoeDg",
+        "payload": {
+          "spec": "agentsigna-passport",
+          "specVersion": "1.0",
+          "jti": "bdf689b5-3254-4d01-803c-e0ddc283165e",
+          "actionHash": "9df07893508d7da1feb8811167d4470164fdc96ac0ee467a60beb12e63973eca",
+          "publicKeyRef": "https://api.agentsigna.com/.well-known/agentsigna-jwks.json",
+          "issuer": "agentsigna",
+          "actionCaseId": "7bbbeeb6-7bc6-4674-ab1b-8b103ff6c516",
+          "machineActorId": "d5cbf963-1ce9-4c79-a868-0fb3606c0a20",
+          "policyId": "1c0c7e28-1041-4e9c-aee0-a398d8be1cd9",
+          "actionType": "PURCHASE_ORDER_CREATE",
+          "amount": 15000,
+          "currency": "USD",
+          "counterpartyId": null,
+          "counterpartyName": null,
+          "decision": "ALLOW",
+          "rationale": "Approved by human approver.",
+          "approvalChain": [
+            {
+              "approverId": "868838e5-43cf-4ae0-a38d-8d62ff0df6bb",
+              "decision": "ALLOW",
+              "comment": "Checked against contract 2026-114.",
+              "createdAt": "2026-10-14T18:26:43.772Z"
+            }
+          ],
+          "issuedAt": "2026-10-14T18:26:43.772Z",
+          "expiresAt": "2026-10-15T18:26:43.772Z"
+        },
+        "createdAt": "2026-10-14T18:26:43.772Z"
+      },
+      "nowMs": 1792088803773,
+      "v111Valid": false,
+      "v111Errors": [
+        "Passport expired at 2026-10-15T18:26:43.772Z."
+      ]
+    },
+    {
+      "case": "human approval with comment after rotation, key B",
+      "variant": "revoked",
+      "keyForm": "pem",
+      "keyKid": "fixture-2026-b",
+      "passport": {
+        "id": "e65b2391-4972-4e03-b5c2-453ffebc3568",
+        "actionCaseId": "7bbbeeb6-7bc6-4674-ab1b-8b103ff6c516",
+        "status": "REVOKED",
+        "issuedAt": "2026-10-14T18:26:43.772Z",
+        "expiresAt": "2026-10-15T18:26:43.772Z",
+        "signature": "ed25519:fixture-2026-b:sdBm2JtBSNIvR_X6wBolMrijYRVLZKbIVHJpR988eaVyz1bfqJJuYCwrhR0dJwsNQxmwgRVDT4TId3qJ8DoeDg",
+        "payload": {
+          "spec": "agentsigna-passport",
+          "specVersion": "1.0",
+          "jti": "bdf689b5-3254-4d01-803c-e0ddc283165e",
+          "actionHash": "9df07893508d7da1feb8811167d4470164fdc96ac0ee467a60beb12e63973eca",
+          "publicKeyRef": "https://api.agentsigna.com/.well-known/agentsigna-jwks.json",
+          "issuer": "agentsigna",
+          "actionCaseId": "7bbbeeb6-7bc6-4674-ab1b-8b103ff6c516",
+          "machineActorId": "d5cbf963-1ce9-4c79-a868-0fb3606c0a20",
+          "policyId": "1c0c7e28-1041-4e9c-aee0-a398d8be1cd9",
+          "actionType": "PURCHASE_ORDER_CREATE",
+          "amount": 15000,
+          "currency": "USD",
+          "counterpartyId": null,
+          "counterpartyName": null,
+          "decision": "ALLOW",
+          "rationale": "Approved by human approver.",
+          "approvalChain": [
+            {
+              "approverId": "868838e5-43cf-4ae0-a38d-8d62ff0df6bb",
+              "decision": "ALLOW",
+              "comment": "Checked against contract 2026-114.",
+              "createdAt": "2026-10-14T18:26:43.772Z"
+            }
+          ],
+          "issuedAt": "2026-10-14T18:26:43.772Z",
+          "expiresAt": "2026-10-15T18:26:43.772Z"
+        },
+        "createdAt": "2026-10-14T18:26:43.772Z"
+      },
+      "nowMs": 1792002463772,
+      "v111Valid": false,
+      "v111Errors": [
+        "Passport has been revoked."
+      ]
+    }
+  ]
+}
